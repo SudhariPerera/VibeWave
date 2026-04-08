@@ -1,0 +1,44 @@
+﻿@model Concert
+
+        <form method="post" class="row">
+            <div class="border p-3">
+                <div>
+                    <h2>Create Concert</h2>
+                </div>
+                <div class="mb-3 row p-1">
+                    <label asp-for="ConcertName" class="ms-2"> </label>
+                    <input asp-for="ConcertName" class="form-control border-0 shadow" />
+                    <span asp-validation-for="ConcertName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3 row p-1">
+                    <label asp-for="ConcertCategory" class="ms-2"> </label>
+                    <input asp-for="ConcertCategory" class="form-control border-0 shadow" />
+                    <span asp-validation-for="ConcertCategory" class="text-danger"></span>
+                </div>
+        
+                <div class="mb-3 row p-1">
+                    <label asp-for="DisplayOrder" class="ms-2"> </label>
+                    <input asp-for="DisplayOrder" class="form-control border-0 shadow" />
+                    <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+                </div>
+
+                <div class="row pt-2">
+                    <div class="col-6 col-md-3">
+                        <button type="submit" class="btn btn-primary form-control">Create</button>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <a asp-controller="Concert" asp-action="Index" class="btn btn-secondary border form-control">
+                            Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
