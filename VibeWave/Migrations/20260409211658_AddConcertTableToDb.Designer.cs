@@ -11,7 +11,7 @@ using VibeWave.Data;
 namespace VibeWave.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260408025306_AddConcertTableToDb")]
+    [Migration("20260409211658_AddConcertTableToDb")]
     partial class AddConcertTableToDb
     {
         /// <inheritdoc />
@@ -32,6 +32,11 @@ namespace VibeWave.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ActorName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("ConcertCategory")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -42,7 +47,10 @@ namespace VibeWave.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("DisplayOrder")
+                    b.Property<int>("DisplayDate")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DisplayTime")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

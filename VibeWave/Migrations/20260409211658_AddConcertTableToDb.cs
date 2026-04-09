@@ -17,8 +17,10 @@ namespace VibeWave.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ConcertName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ActorName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ConcertCategory = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false)
+                    DisplayDate = table.Column<int>(type: "int", nullable: false),
+                    DisplayTime = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

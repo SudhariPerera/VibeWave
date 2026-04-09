@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -14,23 +15,17 @@ namespace VibeWave.Migrations
         {
             migrationBuilder.InsertData(
                 table: "Concert",
-                columns: new[] { "Id", "ConcertCategory", "ConcertName", "DisplayOrder" },
+                columns: new[] { "Id", "ActorName", "ConcertCategory", "ConcertName", "DisplayDate", "DisplayTime" },
                 values: new object[,]
                 {
-                    { 1, "More Music", "Come Together - Born to Run - Bruce Springsteen", 1 },
-                    { 2, "Comedy", "Kyla Cobbler - Not My Lemons", 2 },
-                    { 3, "Rock and Pop", "Nurse Georgie Carroll - Infectious", 3 }
+                    { 2, "ABC", "Comedy", "Kyla Cobbler - Not My Lemons", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0) },
+                    { 3, "ABC", "Rock and Pop", "Nurse Georgie Carroll - Infectious", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0) }
                 });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DeleteData(
-                table: "Concert",
-                keyColumn: "Id",
-                keyValue: 1);
-
             migrationBuilder.DeleteData(
                 table: "Concert",
                 keyColumn: "Id",

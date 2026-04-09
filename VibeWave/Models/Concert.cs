@@ -15,11 +15,22 @@ namespace VibeWave.Models
 
         [Required]
         [MaxLength(100)]
+        [DisplayName("Actor Name")]
+        public string ActorName { get; set; }
+
+        [Required]
+        [MaxLength(100)]
         [DisplayName("Concert Category")]
         public string ConcertCategory { get; set; }
 
-        [Range(1, 100, ErrorMessage = "Please enter between 1 and 100")]
-        [DisplayName("Display Order")]
-        public int DisplayOrder { get; set; }
+        [Required]
+        [DisplayName("Display Date")]
+        [DataType(DataType.Date)]
+        public DateOnly DisplayDate { get; set; }
+
+        [Required]
+        [DisplayName("Display Time")]
+        [DataType(DataType.Time)]
+        public TimeOnly DisplayTime { get; set; }
     }
 }
