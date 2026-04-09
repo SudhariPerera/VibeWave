@@ -19,20 +19,28 @@
                 Concert Name
             </th>
             <th>
+                Actor Name
+            </th>
+            <th>
                 Concert Category
             </th>
             <th>
-                Display Order
+                Display Date
+            </th>
+            <th>
+                Display Time
             </th>
         </tr>
     </thread>
     <tbody>
-        @foreach (var obj in Model.OrderBy(u => u.DisplayOrder))
+            @foreach (var obj in Model.OrderBy(u => u.DisplayDate))
         {
             <tr>
                 <td>@obj.ConcertName</td>
+                <td>@obj.ActorName</td>
                 <td>@obj.ConcertCategory</td>
-                <td>@obj.DisplayOrder</td>
+                <td>@obj.DisplayDate</td>
+                <td>@obj.DisplayTime</td>
                 <td>
                     <div class="w-75 btn-group" role="group">
                         <a asp-controller="Concert" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary mx-2">
