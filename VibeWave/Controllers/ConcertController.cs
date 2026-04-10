@@ -6,18 +6,17 @@ namespace VibeWave.Controllers
 {
     public class ConcertController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        public ConcertController(ApplicationDbContext db)
+        private readonly IUnitOfWork _unitOfWork;
+        public ConcertController(IUnitOfWork unitOfWork)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
-            List<Concert> objConcertList = _db.Concert.ToList();
+            List<Concert> objConcertList = _unitOfWork.Concert.GetAll().ToList();
             return View(objConcertList);
         }
 
-     
         public IActionResult Create( )
         {
              return View();
@@ -32,8 +31,8 @@ namespace VibeWave.Controllers
             }
             if (ModelState.IsValid)
             {
-                _db.Concert.Add(obj);
-                _db.SaveChanges();
+                _unitOfWork.Concert.Add(obj);
+                _unitOfWork.Save();
                 TempData["success"] = " Concert Details Created Successfully";
                 return RedirectToAction("Index");
             }
@@ -48,7 +47,7 @@ namespace VibeWave.Controllers
             {
                 return NotFound();
             }
-            Concert? concertFromDb = _db.Concert.Find(id);
+            Concert? concertFromDb = _unitOfWork.Concert.Get(u => u.Id == id);
             if (concertFromDb == null)
             {
                 return NotFound();
@@ -61,22 +60,22 @@ namespace VibeWave.Controllers
         {
             if(ModelState.IsValid)
             {
-                _db.Concert.Update(obj);
-                _db.SaveChanges();
+                _unitOfWork.Concert.Update(obj);
+                _unitOfWork.Save();
                 TempData["success"] = " Concert Details Updated Successfully";
                 return RedirectToAction("Index");
             }
             return View();
         }
 
-        //EDIT BUTTON
+        //Delete Button
         public IActionResult Delete(int? id)
         {
             if (id == null || id == 0)
             {
                 return NotFound();
             }
-            Concert? concertFromDb = _db.Concert.Find(id);
+            Concert? concertFromDb = _unitOfWork.Concert.Get(u => u.Id == id);
             if (concertFromDb == null)
             {
                 return NotFound();
@@ -87,13 +86,13 @@ namespace VibeWave.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePOST(int? id)
         {
-            Concert? obj=_db.Concert.Find(id); 
+            Concert? obj = _unitOfWork.Concert.Get(u => u.Id == id);
             if (obj == null) 
             {
                 return NotFound();
             }
-            _db.Concert.Remove(obj);
-            _db.SaveChanges();
+            _unitOfWork.Concert.Remove(obj);
+            _unitOfWork.Save();
             TempData["success"] = " Concert Details Deleted Successfully";
             return RedirectToAction("Index");
         }

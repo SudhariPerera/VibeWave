@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VibeWave", "VibeWave\VibeWa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VibeWave.DataAccess", "VibeWave.DataAccess\VibeWave.DataAccess.csproj", "{DF78AD85-5E6F-4769-8DFC-576FB62D3C2C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VibeWave.Models", "VibeWave.Models\VibeWave.Models.csproj", "{928DC8EC-AFA7-4A8F-A053-E13AE814636B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VibeWave.Utilities", "VibeWave.Utilities\VibeWave.Utilities.csproj", "{2626E666-5FA3-4C09-86AA-8027F2241D58}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{DF78AD85-5E6F-4769-8DFC-576FB62D3C2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF78AD85-5E6F-4769-8DFC-576FB62D3C2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF78AD85-5E6F-4769-8DFC-576FB62D3C2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{928DC8EC-AFA7-4A8F-A053-E13AE814636B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{928DC8EC-AFA7-4A8F-A053-E13AE814636B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{928DC8EC-AFA7-4A8F-A053-E13AE814636B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{928DC8EC-AFA7-4A8F-A053-E13AE814636B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2626E666-5FA3-4C09-86AA-8027F2241D58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2626E666-5FA3-4C09-86AA-8027F2241D58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2626E666-5FA3-4C09-86AA-8027F2241D58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2626E666-5FA3-4C09-86AA-8027F2241D58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

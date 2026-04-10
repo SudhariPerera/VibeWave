@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VibeWave.Data;
 
 #nullable disable
 
-namespace VibeWave.Migrations
+namespace VibeWave.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260410025020_AddConcertToDbAndSeedTable")]
+    partial class AddConcertToDbAndSeedTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,6 +43,11 @@ namespace VibeWave.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("ConcertLocation")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("ConcertName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -61,6 +69,7 @@ namespace VibeWave.Migrations
                             Id = 1,
                             ActorName = "ABC",
                             ConcertCategory = "More Music",
+                            ConcertLocation = "A",
                             ConcertName = "Come Together - Born to Run - Bruce Springsteen",
                             DisplayDate = new DateOnly(2026, 5, 1),
                             DisplayTime = new TimeOnly(0, 20, 0)
@@ -70,6 +79,7 @@ namespace VibeWave.Migrations
                             Id = 2,
                             ActorName = "ABC",
                             ConcertCategory = "Comedy",
+                            ConcertLocation = "A",
                             ConcertName = "Kyla Cobbler - Not My Lemons",
                             DisplayDate = new DateOnly(2026, 5, 1),
                             DisplayTime = new TimeOnly(0, 20, 0)
@@ -79,6 +89,7 @@ namespace VibeWave.Migrations
                             Id = 3,
                             ActorName = "ABC",
                             ConcertCategory = "Rock and Pop",
+                            ConcertLocation = "A",
                             ConcertName = "Nurse Georgie Carroll - Infectious",
                             DisplayDate = new DateOnly(2026, 5, 1),
                             DisplayTime = new TimeOnly(0, 20, 0)

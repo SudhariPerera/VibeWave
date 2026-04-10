@@ -24,6 +24,12 @@ namespace VibeWave.Models
         public string ConcertCategory { get; set; }
 
         [Required]
+        [MaxLength(100)]
+        [DisplayName("Concert Location")]
+        public string ConcertLocation { get; set; }
+        
+
+        [Required]
         [DisplayName("Display Date")]
         [DataType(DataType.Date)]
         public DateOnly DisplayDate { get; set; }
