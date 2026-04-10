@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using VibeWave.Data;
+using VibeWave.DataAccess.Repository.IRepository;
 using VibeWave.Models;
 
 namespace VibeWave.Controllers
