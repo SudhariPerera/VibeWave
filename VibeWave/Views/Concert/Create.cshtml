@@ -18,6 +18,12 @@
                 </div>
 
                 <div class="mb-3 row p-1">
+                    <label asp-for="ActorName" class="ms-2"> </label>
+                    <input asp-for="ActorName" class="form-control border-0 shadow" />
+                    <span asp-validation-for="ActorName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3 row p-1">
                     <label asp-for="ConcertCategory" class="ms-2"> </label>
                     <input asp-for="ConcertCategory" class="form-control border-0 shadow" />
                     <span asp-validation-for="ConcertCategory" class="text-danger"></span>
@@ -30,9 +36,15 @@
                 </div>
 
                 <div class="mb-3 row p-1">
-                    <label asp-for="DisplayOrder" class="ms-2"> </label>
-                    <input asp-for="DisplayOrder" class="form-control border-0 shadow" />
-                    <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+                    <label asp-for="DisplayDate" class="ms-2"> </label>
+                    <input asp-for="DisplayDate" class="form-control border-0 shadow" />
+                    <span asp-validation-for="DisplayDate" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3 row p-1">
+                    <label asp-for="DisplayTime" class="ms-2"> </label>
+                    <input asp-for="DisplayTime" class="form-control border-0 shadow" />
+                    <span asp-validation-for="DisplayTime" class="text-danger"></span>
                 </div>
 
                 <div class="row pt-2">

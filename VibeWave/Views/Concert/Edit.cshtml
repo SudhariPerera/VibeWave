@@ -18,16 +18,30 @@
                     <span asp-validation-for="ConcertName" class="text-danger"></span>
                 </div>
                 <div class="py-2 col-12">
+                    <label asp-for="ActorName" class="ms-2"> </label>
+                    <input asp-for="ActorName" class="form-control border-0 shadow" />
+                    <span asp-validation-for="ActorName" class="text-danger"></span>
+                </div>
+                <div class="py-2 col-12">
                     <label asp-for="ConcertCategory" class="ms-2"> </label>
                     <input asp-for="ConcertCategory" class="form-control border-0 shadow" />
                     <span asp-validation-for="ConcertCategory" class="text-danger"></span>
                 </div>
                 <div class="py-2 col-12">
-                    <label asp-for="DisplayOrder" class="ms-2"> </label>
-                    <input asp-for="DisplayOrder" class="form-control border-0 shadow" />
-                    <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+                    <label asp-for="ConcertLocation" class="ms-2"> </label>
+                    <input asp-for="ConcertLocation" class="form-control border-0 shadow" />
+                    <span asp-validation-for="ConcertLocation" class="text-danger"></span>
                 </div>
-
+                <div class="py-2 col-12">
+                    <label asp-for="DisplayDate" class="ms-2"> </label>
+                    <input asp-for="DisplayDate" class="form-control border-0 shadow" />
+                    <span asp-validation-for="DisplayDate" class="text-danger"></span>
+                </div>
+                <div class="py-2 col-12">
+                    <label asp-for="DisplayTime" class="ms-2"> </label>
+                    <input asp-for="DisplayTime" class="form-control border-0 shadow" />
+                    <span asp-validation-for="DisplayTime" class="text-danger"></span>
+                </div>
                 <div class="row mt-3">
                     <div class="col-6 col-md-3">
                         <button type="submit" class="btn btn-primary form-control">Update</button>
