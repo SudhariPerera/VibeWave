@@ -1,10 +1,16 @@
 ﻿@model Concert
 
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class=" col text-center">
+                <h2 class="text-white py-2">Create Category</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
         <form method="post" class="row">
             <div class="border p-3">
-                <div>
-                    <h2>Create Concert</h2>
-                </div>
                 <div class="mb-3 row p-1">
                     <label asp-for="ConcertName" class="ms-2"> </label>
                     <input asp-for="ConcertName" class="form-control border-0 shadow" />
@@ -16,7 +22,13 @@
                     <input asp-for="ConcertCategory" class="form-control border-0 shadow" />
                     <span asp-validation-for="ConcertCategory" class="text-danger"></span>
                 </div>
-        
+
+                <div class="mb-3 row p-1">
+                    <label asp-for="ConcertLocation" class="ms-2"> </label>
+                    <input asp-for="ConcertLocation" class="form-control border-0 shadow" />
+                    <span asp-validation-for="ConcertLocation" class="text-danger"></span>
+                </div>
+
                 <div class="mb-3 row p-1">
                     <label asp-for="DisplayOrder" class="ms-2"> </label>
                     <input asp-for="DisplayOrder" class="form-control border-0 shadow" />
@@ -36,6 +48,8 @@
                 </div>
             </div>
         </form>
+    </div>
+ </div>
 
 @section Scripts {
     @{
