@@ -33,7 +33,6 @@ namespace VibeWave.Controllers
             //}
             if (ModelState.IsValid)
             {
-                obj.CategoryId = 0;//AI advise me to change
                 _unitOfWork.Category.Add(obj);
                 _unitOfWork.Save();
                 TempData["success"] = " Category Details Created Successfully";

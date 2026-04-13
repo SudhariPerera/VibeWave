@@ -12,8 +12,8 @@ using VibeWave.Data;
 namespace VibeWave.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260413222006_updateDb")]
-    partial class updateDb
+    [Migration("20260413224939_UpdateDatabase")]
+    partial class UpdateDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
