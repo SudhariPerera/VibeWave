@@ -49,5 +49,9 @@ namespace VibeWave.Models
         ////navigation property
         //[ForeignKey("CategoryId")]
         //public Category Category { get; set; }
+        [Required]
+        [MaxLength(100)]
+        [DisplayName("Ticket Price")]
+        public string TicketPrice { get; set; }
     }
 }
