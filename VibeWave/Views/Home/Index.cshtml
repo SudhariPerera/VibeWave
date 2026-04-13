@@ -1,8 +1,129 @@
-﻿@{
+﻿@model List<Concert>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <h3>VibeWave</h3>
+    <h1 class="display-4">Welcome to VibeWave</h1>
+    @* <h3>Upcoming Concerts</h3> *@
 </div>
+
+<div class="container">
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var concert in Model.OrderBy(c => c.DisplayDate))
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card" style="height: 300px;">
+                        <div class="card-body" style="display: flex; flex-direction: column;">
+                            <h5 class="card-title">@concert.ConcertName</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">ActorName - @concert.ActorName</h6>
+                            <p class="card-text">
+                                <strong>Category:</strong> @concert.ConcertCategory<br />
+                                <strong>Date:</strong> @concert.DisplayDate<br />
+                                <strong>Time:</strong> @concert.DisplayTime
+                            </p>
+                            <button type="button" 
+                                class="btn btn-primary" 
+                                onclick="openModal('@concert.ConcertName', 
+                                                   '@concert.ActorName', 
+                                                   '@concert.ConcertCategory', 
+                                                   '@concert.ConcertLocation', 
+                                                   '@concert.DisplayDate', 
+                                                   '@concert.DisplayTime')">
+                                Details
+                            </button>
+                            <a asp-controller="Booking" asp-action="Create" asp-route-id="@concert.Id" class="btn btn-success">Book</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p>No concerts available.</p>
+    }
+</div>
+
+<div id="concertModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        padding-top: 200px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+        background: #bfddf2;
+        background: radial-gradient(circle,rgba(191, 221, 242, 1) 0%, rgba(204, 210, 249, 1) 25%, rgba(215, 201, 255, 1) 45%, rgba(232, 213, 252, 1) 71%, rgba(252, 227, 248, 1) 100%);
+        margin: auto;
+        padding: 20px;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 5px;
+        align-content:center;
+        text-align: center;
+    }
+
+    .close {
+        color: #800080;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        text-align: right;
+    }
+
+        .close:hover {
+            color: black;
+        }
+</style>
+
+<script>
+    var modal = document.getElementById("concertModal");
+    var span = document.getElementsByClassName("close")[0];
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    function openModal(name, actor, category, location, date, time) {
+        document.getElementById("modalContent").innerHTML = `
+            <h2>${name}</h2>
+            <p><strong>Actor:</strong> ${actor}</p>
+            <p><strong>Category:</strong> ${category}</p>
+            <p><strong>Location:</strong> ${location}</p>
+            <p><strong>Date:</strong> ${date}</p>
+            <p><strong>Time:</strong> ${time}</p>
+            <p><strong>Price:</strong> $50.00</p>
+            <hr />
+            <button onclick="closeModal()" class="btn btn-secondary">Close</button>
+        `;
+        modal.style.display = "block";
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+    }
+</script>
