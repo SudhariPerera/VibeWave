@@ -22,6 +22,36 @@ namespace VibeWave.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("VibeWave.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("Category");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = 1,
+                            Name = "Come Together - Born to Run - Bruce Springsteen"
+                        },
+                        new
+                        {
+                            CategoryId = 2,
+                            Name = "Kyla Cobbler - Not My Lemons"
+                        });
+                });
+
             modelBuilder.Entity("VibeWave.Models.Concert", b =>
                 {
                     b.Property<int>("Id")
@@ -31,11 +61,6 @@ namespace VibeWave.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ActorName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("ConcertCategory")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -65,7 +90,6 @@ namespace VibeWave.DataAccess.Migrations
                         {
                             Id = 1,
                             ActorName = "ABC",
-                            ConcertCategory = "More Music",
                             ConcertLocation = "A",
                             ConcertName = "Come Together - Born to Run - Bruce Springsteen",
                             DisplayDate = new DateOnly(2026, 5, 1),
@@ -75,7 +99,6 @@ namespace VibeWave.DataAccess.Migrations
                         {
                             Id = 2,
                             ActorName = "ABC",
-                            ConcertCategory = "Comedy",
                             ConcertLocation = "A",
                             ConcertName = "Kyla Cobbler - Not My Lemons",
                             DisplayDate = new DateOnly(2026, 5, 1),
@@ -85,7 +108,6 @@ namespace VibeWave.DataAccess.Migrations
                         {
                             Id = 3,
                             ActorName = "ABC",
-                            ConcertCategory = "Rock and Pop",
                             ConcertLocation = "A",
                             ConcertName = "Nurse Georgie Carroll - Infectious",
                             DisplayDate = new DateOnly(2026, 5, 1),
