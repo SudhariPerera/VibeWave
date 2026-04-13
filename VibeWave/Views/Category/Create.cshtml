@@ -1,0 +1,39 @@
+﻿@using VibeWave.Models
+@model Category
+
+        <form method="post" class="row">
+            <div class="border p-3">
+                <div>
+                    <h2>Create Category</h2>
+                </div>
+                <div class="mb-3 row p-1">
+                    <label asp-for="CategoryId" class="ms-2"> </label>
+                    <input asp-for="CategoryId" class="form-control border-0 shadow" />
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3 row p-1">
+                    <label asp-for="Name" class="ms-2"> </label>
+                    <input asp-for="Name" class="form-control border-0 shadow" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="row pt-2">
+                    <div class="col-6 col-md-3">
+                        <button type="submit" class="btn btn-primary form-control">Create</button>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <a asp-controller="Category" asp-action="Index" class="btn btn-secondary border form-control">
+                            Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

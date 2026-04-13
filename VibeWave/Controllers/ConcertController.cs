@@ -26,17 +26,17 @@ namespace VibeWave.Controllers
         [HttpPost]
         public IActionResult Create(Concert obj)
         {
-            if (obj.ConcertName == obj.ConcertCategory.ToString())
-            {
-                ModelState.AddModelError("Concert Name", "The Concert Category cannot exactly match with the Concert Name");
-            }
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.Concert.Add(obj);
-                _unitOfWork.Save();
-                TempData["success"] = " Concert Details Created Successfully";
-                return RedirectToAction("Index");
-            }
+            //if (obj.ConcertName == obj.Concert.ToString())
+            //{
+            //    ModelState.AddModelError("Concert Name", "The Concert Category cannot exactly match with the Concert Name");
+            //}
+            //if (ModelState.IsValid)
+            //{
+            //    _unitOfWork.Concert.Add(obj);
+            //    _unitOfWork.Save();
+            //    TempData["success"] = " Concert Details Created Successfully";
+            //    return RedirectToAction("Index");
+            //}
             return View();
 
         }

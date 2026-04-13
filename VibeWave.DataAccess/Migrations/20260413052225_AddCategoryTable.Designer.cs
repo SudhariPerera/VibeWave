@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VibeWave.Data;
 
@@ -11,9 +12,11 @@ using VibeWave.Data;
 namespace VibeWave.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260413052225_AddCategoryTable")]
+    partial class AddCategoryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,11 +84,6 @@ namespace VibeWave.DataAccess.Migrations
                     b.Property<TimeOnly>("DisplayTime")
                         .HasColumnType("time");
 
-                    b.Property<string>("TicketPrice")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Concert");
@@ -98,8 +96,7 @@ namespace VibeWave.DataAccess.Migrations
                             ConcertLocation = "A",
                             ConcertName = "Come Together - Born to Run - Bruce Springsteen",
                             DisplayDate = new DateOnly(2026, 5, 1),
-                            DisplayTime = new TimeOnly(0, 20, 0),
-                            TicketPrice = "50"
+                            DisplayTime = new TimeOnly(0, 20, 0)
                         },
                         new
                         {
@@ -108,8 +105,7 @@ namespace VibeWave.DataAccess.Migrations
                             ConcertLocation = "A",
                             ConcertName = "Kyla Cobbler - Not My Lemons",
                             DisplayDate = new DateOnly(2026, 5, 1),
-                            DisplayTime = new TimeOnly(0, 20, 0),
-                            TicketPrice = "50"
+                            DisplayTime = new TimeOnly(0, 20, 0)
                         },
                         new
                         {
@@ -118,8 +114,7 @@ namespace VibeWave.DataAccess.Migrations
                             ConcertLocation = "A",
                             ConcertName = "Nurse Georgie Carroll - Infectious",
                             DisplayDate = new DateOnly(2026, 5, 1),
-                            DisplayTime = new TimeOnly(0, 20, 0),
-                            TicketPrice = "50"
+                            DisplayTime = new TimeOnly(0, 20, 0)
                         });
                 });
 #pragma warning restore 612, 618
