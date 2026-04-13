@@ -41,6 +41,12 @@
                     <span asp-validation-for="DisplayTime" class="text-danger"></span>
                 </div>
 
+        <div class="mb-3 row p-1">
+            <label asp-for="TicketPrice" class="ms-2"> </label>
+            <input asp-for="TicketPrice" class="form-control border-0 shadow" />
+            <span asp-validation-for="TicketPrice" class="text-danger"></span>
+        </div>
+
                 <div class="row pt-2">
                     <div class="col-6 col-md-3">
                         <button type="submit" class="btn btn-primary form-control">Create</button>

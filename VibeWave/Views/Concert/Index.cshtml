@@ -33,6 +33,9 @@
             <th>
                 Display Time
             </th>
+            <th>
+                Ticket Price
+            </th>
         </tr>
     </thread>
     <tbody>
@@ -45,6 +48,7 @@
                 <td>@obj.ConcertLocation</td>
                 <td>@obj.DisplayDate</td>
                 <td>@obj.DisplayTime</td>
+                <td>@obj.TicketPrice</td>
                 <td>
                     <div class="w-75 btn-group" role="group">
                         <a asp-controller="Concert" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary mx-2">

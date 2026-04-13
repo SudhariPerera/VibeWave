@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VibeWave.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class AddConcertToDbAndSeedTable : Migration
+    public partial class AddConcertToDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,7 +24,8 @@ namespace VibeWave.DataAccess.Migrations
                     ConcertCategory = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ConcertLocation = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     DisplayDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    DisplayTime = table.Column<TimeOnly>(type: "time", nullable: false)
+                    DisplayTime = table.Column<TimeOnly>(type: "time", nullable: false),
+                    TicketPrice = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,12 +34,12 @@ namespace VibeWave.DataAccess.Migrations
 
             migrationBuilder.InsertData(
                 table: "Concert",
-                columns: new[] { "Id", "ActorName", "ConcertCategory", "ConcertLocation", "ConcertName", "DisplayDate", "DisplayTime" },
+                columns: new[] { "Id", "ActorName", "ConcertCategory", "ConcertLocation", "ConcertName", "DisplayDate", "DisplayTime", "TicketPrice" },
                 values: new object[,]
                 {
-                    { 1, "ABC", "More Music", "A", "Come Together - Born to Run - Bruce Springsteen", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0) },
-                    { 2, "ABC", "Comedy", "A", "Kyla Cobbler - Not My Lemons", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0) },
-                    { 3, "ABC", "Rock and Pop", "A", "Nurse Georgie Carroll - Infectious", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0) }
+                    { 1, "ABC", "More Music", "A", "Come Together - Born to Run - Bruce Springsteen", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), "50" },
+                    { 2, "ABC", "Comedy", "A", "Kyla Cobbler - Not My Lemons", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), "50" },
+                    { 3, "ABC", "Rock and Pop", "A", "Nurse Georgie Carroll - Infectious", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), "50" }
                 });
         }
 
