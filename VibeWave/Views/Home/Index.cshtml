@@ -32,7 +32,8 @@
                                                    '@concert.ConcertCategory', 
                                                    '@concert.ConcertLocation', 
                                                    '@concert.DisplayDate', 
-                                                   '@concert.DisplayTime')">
+                                                   '@concert.DisplayTime',
+                                                   ' NZ$ @concert.TicketPrice.00')">
                                 Details
                             </button>
                             <a asp-controller="Booking" asp-action="Create" asp-route-id="@concert.Id" class="btn btn-success">Book</a>
@@ -56,6 +57,7 @@
 </div>
 
 <style>
+
     .modal {
         display: none;
         position: fixed;
@@ -92,6 +94,26 @@
         .close:hover {
             color: black;
         }
+
+    @@media (max-width: 768px) {
+        .float-right-sm
+
+    {
+        float: right;
+    }
+
+    }
+
+    /* Float to the right on screens that are equal to or greater than 769px wide */
+    @@media (min-width: 769px) {
+        .float-right-lg
+
+    {
+        float: right;
+    }
+
+    }
+
 </style>
 
 <script>
@@ -108,15 +130,17 @@
         }
     }
 
-    function openModal(name, actor, category, location, date, time) {
+    function openModal(name, actor, category, location, date, time, price) {
         document.getElementById("modalContent").innerHTML = `
             <h2>${name}</h2>
-            <p><strong>Actor:</strong> ${actor}</p>
+            <P> _______________________ </P>
+            <h5><strong>Actor:</strong> ${actor}</h5>
+            <P> _______________________ </P>
             <p><strong>Category:</strong> ${category}</p>
             <p><strong>Location:</strong> ${location}</p>
             <p><strong>Date:</strong> ${date}</p>
             <p><strong>Time:</strong> ${time}</p>
-            <p><strong>Price:</strong> $50.00</p>
+            <p><strong>Price:${price}</strong> </p>
             <hr />
             <button onclick="closeModal()" class="btn btn-secondary">Close</button>
         `;

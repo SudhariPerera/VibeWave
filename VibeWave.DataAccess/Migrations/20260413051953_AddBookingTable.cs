@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VibeWave.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class AddConcertToDb : Migration
+    public partial class AddBookingTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,6 +32,29 @@ namespace VibeWave.DataAccess.Migrations
                     table.PrimaryKey("PK_Concert", x => x.Id);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Bookings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ConcertId = table.Column<int>(type: "int", nullable: false),
+                    CustomerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NumberOfTickets = table.Column<int>(type: "int", nullable: false),
+                    BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bookings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Bookings_Concert_ConcertId",
+                        column: x => x.ConcertId,
+                        principalTable: "Concert",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Concert",
                 columns: new[] { "Id", "ActorName", "ConcertCategory", "ConcertLocation", "ConcertName", "DisplayDate", "DisplayTime", "TicketPrice" },
@@ -41,11 +64,19 @@ namespace VibeWave.DataAccess.Migrations
                     { 2, "ABC", "Comedy", "A", "Kyla Cobbler - Not My Lemons", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), "50" },
                     { 3, "ABC", "Rock and Pop", "A", "Nurse Georgie Carroll - Infectious", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), "50" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bookings_ConcertId",
+                table: "Bookings",
+                column: "ConcertId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Bookings");
+
             migrationBuilder.DropTable(
                 name: "Concert");
         }
