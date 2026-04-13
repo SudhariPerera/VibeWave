@@ -1,6 +1,6 @@
 ﻿@model Concert
 
-        <form method="post" class="row">
+<form method="post" class="row" asp-action="Create">
             <div class="border p-3">
                 <div>
                     <h2>Create Concert</h2>
@@ -53,7 +53,7 @@
                     </div>
 
                     <div class="col-6 col-md-3">
-                        <a asp-controller="Booking" asp-action="Index" class="btn btn-secondary border form-control">
+                        <a asp-controller="Concert" asp-action="Index" class="btn btn-secondary border form-control">
                             Back to List
                         </a>
                     </div>

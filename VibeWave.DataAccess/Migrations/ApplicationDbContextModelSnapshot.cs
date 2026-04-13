@@ -54,7 +54,6 @@ namespace VibeWave.DataAccess.Migrations
                     b.ToTable("Bookings");
                 });
 
-            modelBuilder.Entity("VibeWave.Models.Concert", b =>
             modelBuilder.Entity("VibeWave.Models.Category", b =>
                 {
                     b.Property<int>("CategoryId")

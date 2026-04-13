@@ -24,21 +24,32 @@ namespace VibeWave.Controllers
         }
 
         [HttpPost]
+        //public IActionResult Create(Concert obj)
+        //{
+        //    if (obj.ConcertName == obj.ConcertName.ToString())
+        //    {
+        //        ModelState.AddModelError("ConcertName", "The Concert Category cannot exactly match with the Concert Name");
+        //    }
+        //    if (ModelState.IsValid)
+        //    {
+        //        _unitOfWork.Concert.Add(obj);
+        //        _unitOfWork.Save();
+        //        TempData["success"] = " Concert Details Created Successfully";
+        //        return RedirectToAction("Index");
+        //   }
+        //    return View();
+
+        //}
         public IActionResult Create(Concert obj)
         {
-            //if (obj.ConcertName == obj.Concert.ToString())
-            //{
-            //    ModelState.AddModelError("Concert Name", "The Concert Category cannot exactly match with the Concert Name");
-            //}
-            //if (ModelState.IsValid)
-            //{
-            //    _unitOfWork.Concert.Add(obj);
-            //    _unitOfWork.Save();
-            //    TempData["success"] = " Concert Details Created Successfully";
-            //    return RedirectToAction("Index");
-            //}
-            return View();
-
+            if (ModelState.IsValid)
+            {
+                _unitOfWork.Concert.Add(obj);
+                _unitOfWork.Save();
+                TempData["success"] = "Concert Details Created Successfully";
+                return RedirectToAction("Index");
+            }
+            return View(obj);
         }
 
         //EDIT BUTTON

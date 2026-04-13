@@ -8,11 +8,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VibeWave.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class AddBookingTable : Migration
+    public partial class updateDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Category",
+                columns: table => new
+                {
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Category", x => x.CategoryId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Concert",
                 columns: table => new
@@ -21,7 +34,6 @@ namespace VibeWave.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ConcertName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ActorName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ConcertCategory = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ConcertLocation = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     DisplayDate = table.Column<DateOnly>(type: "date", nullable: false),
                     DisplayTime = table.Column<TimeOnly>(type: "time", nullable: false),
@@ -56,13 +68,22 @@ namespace VibeWave.DataAccess.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Concert",
-                columns: new[] { "Id", "ActorName", "ConcertCategory", "ConcertLocation", "ConcertName", "DisplayDate", "DisplayTime", "TicketPrice" },
+                table: "Category",
+                columns: new[] { "CategoryId", "Name" },
                 values: new object[,]
                 {
-                    { 1, "ABC", "More Music", "A", "Come Together - Born to Run - Bruce Springsteen", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), "50" },
-                    { 2, "ABC", "Comedy", "A", "Kyla Cobbler - Not My Lemons", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), "50" },
-                    { 3, "ABC", "Rock and Pop", "A", "Nurse Georgie Carroll - Infectious", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), "50" }
+                    { 1, "Come Together - Born to Run - Bruce Springsteen" },
+                    { 2, "Kyla Cobbler - Not My Lemons" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Concert",
+                columns: new[] { "Id", "ActorName", "ConcertLocation", "ConcertName", "DisplayDate", "DisplayTime", "TicketPrice" },
+                values: new object[,]
+                {
+                    { 1, "ABC", "A", "Come Together - Born to Run - Bruce Springsteen", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), "50" },
+                    { 2, "ABC", "A", "Kyla Cobbler - Not My Lemons", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), "50" },
+                    { 3, "ABC", "A", "Nurse Georgie Carroll - Infectious", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), "50" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -76,6 +97,9 @@ namespace VibeWave.DataAccess.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Bookings");
+
+            migrationBuilder.DropTable(
+                name: "Category");
 
             migrationBuilder.DropTable(
                 name: "Concert");
