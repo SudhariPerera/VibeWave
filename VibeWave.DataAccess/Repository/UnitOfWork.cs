@@ -12,14 +12,17 @@ namespace VibeWave.DataAccess.Repository
     {
         private ApplicationDbContext _db;
         public IConcertRepository Concert { get; private set; }
+        public IBookingRepository Booking { get; private set; }
         public ICategoryRepository Category { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
             Concert = new ConcertRepository(_db);
+            Booking = new BookingRepository(_db);
             Category = new CategoryRepository(_db);
         }
+
 
         public void Save()
         {

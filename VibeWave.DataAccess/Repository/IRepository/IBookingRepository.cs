@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VibeWave.Models;
 
 namespace VibeWave.DataAccess.Repository.IRepository
 {
-    public interface IUnitOfWork
+    public interface IBookingRepository : IRepository<Booking>
     {
-        IConcertRepository Concert { get; }
-        IBookingRepository Booking { get; }
-        ICategoryRepository Category { get; }
-        void Save();
+        void Update(Booking obj);
     }
 }
