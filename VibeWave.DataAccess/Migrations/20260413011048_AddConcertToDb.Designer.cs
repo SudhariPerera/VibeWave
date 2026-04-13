@@ -12,8 +12,8 @@ using VibeWave.Data;
 namespace VibeWave.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260410025020_AddConcertToDbAndSeedTable")]
-    partial class AddConcertToDbAndSeedTable
+    [Migration("20260413011048_AddConcertToDb")]
+    partial class AddConcertToDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,6 +59,11 @@ namespace VibeWave.DataAccess.Migrations
                     b.Property<TimeOnly>("DisplayTime")
                         .HasColumnType("time");
 
+                    b.Property<string>("TicketPrice")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Concert");
@@ -72,7 +77,8 @@ namespace VibeWave.DataAccess.Migrations
                             ConcertLocation = "A",
                             ConcertName = "Come Together - Born to Run - Bruce Springsteen",
                             DisplayDate = new DateOnly(2026, 5, 1),
-                            DisplayTime = new TimeOnly(0, 20, 0)
+                            DisplayTime = new TimeOnly(0, 20, 0),
+                            TicketPrice = "50"
                         },
                         new
                         {
@@ -82,7 +88,8 @@ namespace VibeWave.DataAccess.Migrations
                             ConcertLocation = "A",
                             ConcertName = "Kyla Cobbler - Not My Lemons",
                             DisplayDate = new DateOnly(2026, 5, 1),
-                            DisplayTime = new TimeOnly(0, 20, 0)
+                            DisplayTime = new TimeOnly(0, 20, 0),
+                            TicketPrice = "50"
                         },
                         new
                         {
@@ -92,7 +99,8 @@ namespace VibeWave.DataAccess.Migrations
                             ConcertLocation = "A",
                             ConcertName = "Nurse Georgie Carroll - Infectious",
                             DisplayDate = new DateOnly(2026, 5, 1),
-                            DisplayTime = new TimeOnly(0, 20, 0)
+                            DisplayTime = new TimeOnly(0, 20, 0),
+                            TicketPrice = "50"
                         });
                 });
 #pragma warning restore 612, 618

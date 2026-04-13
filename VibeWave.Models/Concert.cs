@@ -38,5 +38,10 @@ namespace VibeWave.Models
         [DisplayName("Display Time")]
         [DataType(DataType.Time)]
         public TimeOnly DisplayTime { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        [DisplayName("Ticket Price")]
+        public string TicketPrice { get; set; }
     }
 }
