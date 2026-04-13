@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VibeWave.Data;
 
@@ -11,9 +12,11 @@ using VibeWave.Data;
 namespace VibeWave.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260413052225_AddCategoryTable")]
+    partial class AddCategoryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,39 +25,6 @@ namespace VibeWave.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("VibeWave.Models.Booking", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("BookingDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ConcertId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CustomerName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("NumberOfTickets")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConcertId");
-
-                    b.ToTable("Bookings");
-                });
-
-            modelBuilder.Entity("VibeWave.Models.Concert", b =>
             modelBuilder.Entity("VibeWave.Models.Category", b =>
                 {
                     b.Property<int>("CategoryId")
@@ -114,11 +84,6 @@ namespace VibeWave.DataAccess.Migrations
                     b.Property<TimeOnly>("DisplayTime")
                         .HasColumnType("time");
 
-                    b.Property<string>("TicketPrice")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Concert");
@@ -131,8 +96,7 @@ namespace VibeWave.DataAccess.Migrations
                             ConcertLocation = "A",
                             ConcertName = "Come Together - Born to Run - Bruce Springsteen",
                             DisplayDate = new DateOnly(2026, 5, 1),
-                            DisplayTime = new TimeOnly(0, 20, 0),
-                            TicketPrice = "50"
+                            DisplayTime = new TimeOnly(0, 20, 0)
                         },
                         new
                         {
@@ -141,8 +105,7 @@ namespace VibeWave.DataAccess.Migrations
                             ConcertLocation = "A",
                             ConcertName = "Kyla Cobbler - Not My Lemons",
                             DisplayDate = new DateOnly(2026, 5, 1),
-                            DisplayTime = new TimeOnly(0, 20, 0),
-                            TicketPrice = "50"
+                            DisplayTime = new TimeOnly(0, 20, 0)
                         },
                         new
                         {
@@ -151,20 +114,8 @@ namespace VibeWave.DataAccess.Migrations
                             ConcertLocation = "A",
                             ConcertName = "Nurse Georgie Carroll - Infectious",
                             DisplayDate = new DateOnly(2026, 5, 1),
-                            DisplayTime = new TimeOnly(0, 20, 0),
-                            TicketPrice = "50"
+                            DisplayTime = new TimeOnly(0, 20, 0)
                         });
-                });
-
-            modelBuilder.Entity("VibeWave.Models.Booking", b =>
-                {
-                    b.HasOne("VibeWave.Models.Concert", "Concert")
-                        .WithMany()
-                        .HasForeignKey("ConcertId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Concert");
                 });
 #pragma warning restore 612, 618
         }

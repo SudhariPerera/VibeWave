@@ -21,7 +21,7 @@
                             <h5 class="card-title">@concert.ConcertName</h5>
                             <h6 class="card-subtitle mb-2 text-muted">ActorName - @concert.ActorName</h6>
                             <p class="card-text">
-                                <strong>Category:</strong> @concert.ConcertCategory<br />
+                                @* <strong>Category:</strong> @concert.ConcertCategory<br /> *@
                                 <strong>Date:</strong> @concert.DisplayDate<br />
                                 <strong>Time:</strong> @concert.DisplayTime
                             </p>
@@ -29,7 +29,7 @@
                                 class="btn btn-primary" 
                                 onclick="openModal('@concert.ConcertName', 
                                                    '@concert.ActorName', 
-                                                   '@concert.ConcertCategory', 
+                                                   'ConcertCategory', 
                                                    '@concert.ConcertLocation', 
                                                    '@concert.DisplayDate', 
                                                    '@concert.DisplayTime',
