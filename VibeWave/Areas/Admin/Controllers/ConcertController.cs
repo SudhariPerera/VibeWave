@@ -23,12 +23,12 @@ namespace VibeWave.Areas.Admin.Controllers
 
         public IActionResult Create( )
         {
-            IEnumerable<SelectListItem> ConcertList = _unitOfWork.Concert.GetAll().Select(u => new SelectListItem
+            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
             {
-                Text = u.ActorName,
-                Value=u.Id.ToString()
+                Text = u.Name,
+                Value=u.CategoryId.ToString()
             });
-            ViewBag.Concert = ConcertList;
+            ViewBag.CategoryList = CategoryList;
              return View();
         }
 
