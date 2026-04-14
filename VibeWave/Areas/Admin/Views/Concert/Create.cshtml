@@ -46,6 +46,13 @@
             <label asp-for="TicketPrice" class="ms-2"> </label>
             <input asp-for="TicketPrice" disabled class="form-control" />
         </div>
+        <div class="mb-3 row p-1">
+            <label asp-for="CategoryId" class="ms-2"> </label>
+            <select asp-for="CategoryId"asp-items="ViewBag.CategoryList" class="form-control border-0 shadow">
+                <option disabled selected>--Select Category</option>
+            </select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
 
                 <div class="row pt-2">
                     <div class="col-6 col-md-3">

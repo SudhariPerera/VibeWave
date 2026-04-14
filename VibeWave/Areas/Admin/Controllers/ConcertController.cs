@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using VibeWave.Data;
 using VibeWave.DataAccess.Repository.IRepository;
 using VibeWave.Models;
@@ -22,6 +23,12 @@ namespace VibeWave.Areas.Admin.Controllers
 
         public IActionResult Create( )
         {
+            IEnumerable<SelectListItem> ConcertList = _unitOfWork.Concert.GetAll().Select(u => new SelectListItem
+            {
+                Text = u.ActorName,
+                Value=u.Id.ToString()
+            });
+            ViewBag.Concert = ConcertList;
              return View();
         }
 
