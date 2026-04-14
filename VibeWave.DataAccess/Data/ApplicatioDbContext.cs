@@ -24,7 +24,7 @@ namespace VibeWave.Data
                     ConcertLocation = "A",
                     DisplayDate = new DateOnly(2026, 05, 01),
                     DisplayTime = new TimeOnly(00, 20),
-                    TicketPrice = "50",
+                    TicketPrice = 50,
                     CategoryId = 1
                 },
                 new Concert
@@ -35,7 +35,7 @@ namespace VibeWave.Data
                     ConcertLocation = "A",
                     DisplayDate = new DateOnly(2026, 05, 01),
                     DisplayTime = new TimeOnly(00, 20),
-                    TicketPrice = "50",
+                    TicketPrice = 50,
                     CategoryId = 2
                 },
                 new Concert
@@ -46,7 +46,7 @@ namespace VibeWave.Data
                     ConcertLocation = "A",
                     DisplayDate = new DateOnly(2026, 05, 01),
                     DisplayTime = new TimeOnly(00, 20),
-                    TicketPrice = "50",
+                    TicketPrice = 50,
                     CategoryId = 3
                 }
                 );
