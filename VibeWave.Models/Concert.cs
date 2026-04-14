@@ -41,17 +41,21 @@ namespace VibeWave.Models
         [DataType(DataType.Time)]
         public TimeOnly DisplayTime { get; set; }
 
-        ////foreign Key
-        //[Required]
-        //[DisplayName("Category")]
-        //public int CategoryId { get; set; }
 
-        ////navigation property
-        //[ForeignKey("CategoryId")]
-        //public Category Category { get; set; }
         [Required]
         [DisplayName("Ticket Price")]
         [Column(TypeName = "decimal(10,2)")]
         public decimal TicketPrice { get; set; }
+
+        //foreign Key
+        [Required]
+        [DisplayName("Category")]
+        public int CategoryId { get; set; }
+        //定义了一个整数类型的属性 CategoryId，它会被映射为 Concert 表中的一个列。这个列的值是 Category 表的主键值
+
+        //navigation property
+        [ForeignKey("CategoryId")]
+        public Category Category { get; set; }
+        //这是一个 导航属性。它不会直接映射为数据库列，而是允许你在代码中通过 Concert 对象直接访问它所属的 Category 对象。例如：concert.Category.Name 可以获取到分类名称。
     }
 }
