@@ -2,7 +2,8 @@
 
 namespace VibeWave.Areas.Customer.Controllers
 {
-    public class Contact : Controller
+    [Area("Customer")]
+    public class ContactController : Controller
     {
         public IActionResult Index()
         {

@@ -8,6 +8,7 @@ using System.IO;
 
 namespace VibeWave.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class BookingController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

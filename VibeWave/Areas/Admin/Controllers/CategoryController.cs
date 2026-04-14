@@ -5,7 +5,7 @@ using VibeWave.Models;
 
 namespace VibeWave.Areas.Admin.Controllers
 {
-    //[Area("Admin")]
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
