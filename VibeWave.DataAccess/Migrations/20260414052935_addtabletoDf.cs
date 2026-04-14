@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VibeWave.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTotalPrice : Migration
+    public partial class addtabletoDf : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,11 +37,18 @@ namespace VibeWave.DataAccess.Migrations
                     ConcertLocation = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     DisplayDate = table.Column<DateOnly>(type: "date", nullable: false),
                     DisplayTime = table.Column<TimeOnly>(type: "time", nullable: false),
-                    TicketPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
+                    TicketPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Concert", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Concert_Category_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Category",
+                        principalColumn: "CategoryId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,7 +62,8 @@ namespace VibeWave.DataAccess.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NumberOfTickets = table.Column<int>(type: "int", nullable: false),
                     BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
+                    TotalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    QrCodeUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -73,24 +81,30 @@ namespace VibeWave.DataAccess.Migrations
                 columns: new[] { "CategoryId", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Come Together - Born to Run - Bruce Springsteen" },
-                    { 2, "Kyla Cobbler - Not My Lemons" }
+                    { 1, "Action" },
+                    { 2, "Sci-Fi" },
+                    { 3, "History" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Concert",
-                columns: new[] { "Id", "ActorName", "ConcertLocation", "ConcertName", "DisplayDate", "DisplayTime", "TicketPrice" },
+                columns: new[] { "Id", "ActorName", "CategoryId", "ConcertLocation", "ConcertName", "DisplayDate", "DisplayTime", "TicketPrice" },
                 values: new object[,]
                 {
-                    { 1, "ABC", "A", "Come Together - Born to Run - Bruce Springsteen", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), 50m },
-                    { 2, "ABC", "A", "Kyla Cobbler - Not My Lemons", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), 50m },
-                    { 3, "ABC", "A", "Nurse Georgie Carroll - Infectious", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), 50m }
+                    { 1, "ABC", 1, "A", "Come Together - Born to Run - Bruce Springsteen", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), 50m },
+                    { 2, "ABC", 2, "A", "Kyla Cobbler - Not My Lemons", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), 50m },
+                    { 3, "ABC", 3, "A", "Nurse Georgie Carroll - Infectious", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), 50m }
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_ConcertId",
                 table: "Bookings",
                 column: "ConcertId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Concert_CategoryId",
+                table: "Concert",
+                column: "CategoryId");
         }
 
         /// <inheritdoc />
@@ -100,10 +114,10 @@ namespace VibeWave.DataAccess.Migrations
                 name: "Bookings");
 
             migrationBuilder.DropTable(
-                name: "Category");
+                name: "Concert");
 
             migrationBuilder.DropTable(
-                name: "Concert");
+                name: "Category");
         }
     }
 }

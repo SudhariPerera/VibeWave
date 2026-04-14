@@ -81,12 +81,17 @@ namespace VibeWave.DataAccess.Migrations
                         new
                         {
                             CategoryId = 1,
-                            Name = "Come Together - Born to Run - Bruce Springsteen"
+                            Name = "Action"
                         },
                         new
                         {
                             CategoryId = 2,
-                            Name = "Kyla Cobbler - Not My Lemons"
+                            Name = "Sci-Fi"
+                        },
+                        new
+                        {
+                            CategoryId = 3,
+                            Name = "History"
                         });
                 });
 
@@ -102,6 +107,9 @@ namespace VibeWave.DataAccess.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcertLocation")
                         .IsRequired()
@@ -124,6 +132,8 @@ namespace VibeWave.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Concert");
 
                     b.HasData(
@@ -131,6 +141,7 @@ namespace VibeWave.DataAccess.Migrations
                         {
                             Id = 1,
                             ActorName = "ABC",
+                            CategoryId = 1,
                             ConcertLocation = "A",
                             ConcertName = "Come Together - Born to Run - Bruce Springsteen",
                             DisplayDate = new DateOnly(2026, 5, 1),
@@ -141,6 +152,7 @@ namespace VibeWave.DataAccess.Migrations
                         {
                             Id = 2,
                             ActorName = "ABC",
+                            CategoryId = 2,
                             ConcertLocation = "A",
                             ConcertName = "Kyla Cobbler - Not My Lemons",
                             DisplayDate = new DateOnly(2026, 5, 1),
@@ -151,6 +163,7 @@ namespace VibeWave.DataAccess.Migrations
                         {
                             Id = 3,
                             ActorName = "ABC",
+                            CategoryId = 3,
                             ConcertLocation = "A",
                             ConcertName = "Nurse Georgie Carroll - Infectious",
                             DisplayDate = new DateOnly(2026, 5, 1),
@@ -168,6 +181,17 @@ namespace VibeWave.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Concert");
+                });
+
+            modelBuilder.Entity("VibeWave.Models.Concert", b =>
+                {
+                    b.HasOne("VibeWave.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }
