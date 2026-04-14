@@ -2,8 +2,9 @@
 using VibeWave.DataAccess.Repository.IRepository;
 using VibeWave.Models;
 
-namespace VibeWave.Controllers
+namespace VibeWave.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class BookingController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace VibeWave.Controllers
+namespace VibeWave.Areas.Customer.Controllers
 {
-    public class Contact : Controller
+    [Area("Customer")]
+    public class ContactController : Controller
     {
         public IActionResult Index()
         {

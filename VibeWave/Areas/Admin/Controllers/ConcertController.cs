@@ -5,6 +5,7 @@ using VibeWave.Models;
 
 namespace VibeWave.Controllers
 {
+    [Area("Admin")]
     public class ConcertController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
