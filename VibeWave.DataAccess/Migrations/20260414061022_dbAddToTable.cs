@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VibeWave.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class addtabletoDf : Migration
+    public partial class dbAddToTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

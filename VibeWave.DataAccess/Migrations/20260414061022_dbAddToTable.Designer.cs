@@ -12,8 +12,8 @@ using VibeWave.Data;
 namespace VibeWave.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260414052935_addtabletoDf")]
-    partial class addtabletoDf
+    [Migration("20260414061022_dbAddToTable")]
+    partial class dbAddToTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
