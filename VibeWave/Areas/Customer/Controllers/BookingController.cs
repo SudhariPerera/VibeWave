@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 
-namespace VibeWave.Controllers
+namespace VibeWave.Areas.Customer.Controllers
 {
     public class BookingController : Controller
     {

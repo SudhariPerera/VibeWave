@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace VibeWave.Controllers
+namespace VibeWave.Areas.Customer.Controllers
 {
     public class Contact : Controller
     {

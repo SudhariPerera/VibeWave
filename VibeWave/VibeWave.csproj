@@ -22,4 +22,9 @@
     <ProjectReference Include="..\VibeWave.DataAccess\VibeWave.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Views\" />
+    <Folder Include="Areas\Customer\Views\" />
+  </ItemGroup>
+
 </Project>

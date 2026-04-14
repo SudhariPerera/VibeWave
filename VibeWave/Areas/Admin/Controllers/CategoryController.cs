@@ -3,7 +3,7 @@ using VibeWave.Data;
 using VibeWave.DataAccess.Repository.IRepository;
 using VibeWave.Models;
 
-namespace VibeWave.Controllers
+namespace VibeWave.Areas.Admin.Controllers
 {
     //[Area("Admin")]
     public class CategoryController : Controller
