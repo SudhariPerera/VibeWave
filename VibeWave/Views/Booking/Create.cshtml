@@ -13,11 +13,11 @@
                 </div>
                 <div class="card-body">
                     <h4>@Model.ConcertName</h4>
-                    <p><strong>Actor:</strong> @Model.ActorName</p>
-                    <p><strong>Date:</strong> @Model.DisplayDate</p>
-                    <p><strong>Time:</strong> @Model.DisplayTime</p>
-                    <p><strong>Location:</strong> @Model.ConcertLocation</p>
-                    <p><strong>Price:</strong> NZ$ @Model.TicketPrice.00</p>
+                    <p><strong>Actor :</strong> @Model.ActorName</p>
+                    <p><strong>Date :</strong> @Model.DisplayDate</p>
+                    <p><strong>Time :</strong> @Model.DisplayTime</p>
+                    <p><strong>Location :</strong> @Model.ConcertLocation</p>
+                    <p><strong>Price :</strong> NZ$ @Model.TicketPrice</p>
 
                     <hr />
 
@@ -37,6 +37,11 @@
                             <input type="number" name="NumberOfTickets" class="form-control" min="1" max="10" required />
                         </div>
 
+                        <div class="form-group mb-3">
+                            <label>Total Price (NZ$) </label>
+                            <input type="text" id="totalPrice" class="form-control" readonly />
+                        </div>
+
                         <input type="hidden" name="ConcertId" value="@Model.Id" />
 
                         <button type="submit" class="btn btn-success">Confirm Booking</button>
@@ -47,3 +52,17 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    const ticketPrice = parseFloat("@Model.TicketPrice");
+
+    const ticketInput = document.querySelector('input[name="NumberOfTickets"]');
+    const totalPriceField = document.getElementById("totalPrice");
+
+    ticketInput.addEventListener("input", function () {
+        let quantity = parseInt(this.value) || 0;
+        let total = quantity * ticketPrice;
+        totalPriceField.value = "NZ$ " + total;
+    });
+</script>

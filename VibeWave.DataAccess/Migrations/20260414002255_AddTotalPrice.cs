@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VibeWave.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateDatabase : Migration
+    public partial class AddTotalPrice : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,7 +37,7 @@ namespace VibeWave.DataAccess.Migrations
                     ConcertLocation = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     DisplayDate = table.Column<DateOnly>(type: "date", nullable: false),
                     DisplayTime = table.Column<TimeOnly>(type: "time", nullable: false),
-                    TicketPrice = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    TicketPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -54,7 +54,8 @@ namespace VibeWave.DataAccess.Migrations
                     CustomerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NumberOfTickets = table.Column<int>(type: "int", nullable: false),
-                    BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -81,9 +82,9 @@ namespace VibeWave.DataAccess.Migrations
                 columns: new[] { "Id", "ActorName", "ConcertLocation", "ConcertName", "DisplayDate", "DisplayTime", "TicketPrice" },
                 values: new object[,]
                 {
-                    { 1, "ABC", "A", "Come Together - Born to Run - Bruce Springsteen", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), "50" },
-                    { 2, "ABC", "A", "Kyla Cobbler - Not My Lemons", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), "50" },
-                    { 3, "ABC", "A", "Nurse Georgie Carroll - Infectious", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), "50" }
+                    { 1, "ABC", "A", "Come Together - Born to Run - Bruce Springsteen", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), 50m },
+                    { 2, "ABC", "A", "Kyla Cobbler - Not My Lemons", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), 50m },
+                    { 3, "ABC", "A", "Nurse Georgie Carroll - Infectious", new DateOnly(2026, 5, 1), new TimeOnly(0, 20, 0), 50m }
                 });
 
             migrationBuilder.CreateIndex(

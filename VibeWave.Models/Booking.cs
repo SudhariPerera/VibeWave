@@ -33,5 +33,11 @@ namespace VibeWave.Models
         public int NumberOfTickets { get; set; }
 
         public DateTime BookingDate { get; set; }
+
+        [Display(Name = "Total Price")]
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal TotalPrice { get; set; }
+
+        public string? QrCodeUrl { get; set; } 
     }
 }
