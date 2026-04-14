@@ -50,8 +50,8 @@ namespace VibeWave.Models
         //[ForeignKey("CategoryId")]
         //public Category Category { get; set; }
         [Required]
-        [MaxLength(100)]
         [DisplayName("Ticket Price")]
-        public string TicketPrice { get; set; }
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal TicketPrice { get; set; }
     }
 }

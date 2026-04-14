@@ -1,0 +1,48 @@
+﻿@model VibeWave.Models.Booking
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3>Booking Details</h3>
+                </div>
+                <center>
+                <div class="card-body">
+                    <h4>Hello! <i class="bi bi-bluesky"></i> @Model.CustomerName</h4>
+
+                    <p><strong>Email :</strong> @Model.Email</p>
+                    <p><strong>Number Of Tickets :</strong> @Model.NumberOfTickets</p>
+                    <p><strong>TotalPrice :</strong> @Model.TotalPrice</p>
+
+                    <div class="w3-container">
+                        <div class="w3-panel w3-pale-blue w3-leftbar w3-rightbar w3-border-blue">
+                            <p><strong>Concer Name :</strong>@Model.Concert?.ConcertName</p>
+                            <p><strong>Concert Location :</strong>@Model.Concert?.ConcertLocation</p>
+                            <p><strong>Display Date :</strong>@Model.Concert?.DisplayDate</p>
+                            <p><strong>Display TIme :</strong>@Model.Concert?.DisplayTime</p>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.QrCodeUrl))
+                    {
+                        <img src="@Model.QrCodeUrl" style="width:200px;height:200px;" />
+                    }
+
+                    <form method="post" action=" ">
+                        
+                        <button type="submit" class="btn btn-success">Pay Now</button>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-house-door"></i> Back to Home
+                        </a>
+
+                        <a asp-controller="Booking" asp-action="Index" class="btn btn-primary">
+                            <i class="bi bi-cart2"></i> Back to Bookings
+                        </a>
+                    </form>
+                </div>
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
