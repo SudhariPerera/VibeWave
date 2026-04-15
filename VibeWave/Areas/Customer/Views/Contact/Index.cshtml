@@ -43,6 +43,7 @@
             <textarea id="message" name="message" placeholder="Write something.." style="height:200px"></textarea>
             <span asp-validation-for="Message" class="text-danger"></span>
 
+            
             <input type="submit" value="Submit">
                 </div>
             </form>
@@ -85,6 +86,11 @@
             border-radius: 5px;
             background-color: #f2f2f2;
             padding: 20px;
+        }
+        /* 让submit按钮另起一行 */
+        .text-danger{
+            display:block;
+            margin-bottom:10px;
         }
     </style>
 @section Scripts {
