@@ -14,6 +14,7 @@ namespace VibeWave.DataAccess.Repository
         public IConcertRepository Concert { get; private set; }
         public IBookingRepository Booking { get; private set; }
         public ICategoryRepository Category { get; private set; }
+        public IContactMessageRepository ContactMessage { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
@@ -21,6 +22,7 @@ namespace VibeWave.DataAccess.Repository
             Concert = new ConcertRepository(_db);
             Booking = new BookingRepository(_db);
             Category = new CategoryRepository(_db);
+            ContactMessage = new ContactMessageRepository(_db);
         }
 
 

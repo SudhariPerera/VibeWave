@@ -12,6 +12,7 @@ namespace VibeWave.Data
         public DbSet<Concert> Concert { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Category> Category { get; set; }
+        public DbSet<ContactMessage> ContactMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

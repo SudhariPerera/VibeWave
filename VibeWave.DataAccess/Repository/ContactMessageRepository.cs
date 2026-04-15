@@ -9,21 +9,17 @@ using VibeWave.Models;
 
 namespace VibeWave.DataAccess.Repository
 {
-    public class CategoryRepository : Repository<Category>, ICategoryRepository
+    public class ContactMessageRepository : Repository<ContactMessage>, IContactMessageRepository
     {
         private readonly ApplicationDbContext _db;
-        public CategoryRepository(ApplicationDbContext db) : base(db)
+        public ContactMessageRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
         }
-        public void Save()
-        {
-            _db.SaveChanges();
-        }
 
-        public void Update(Category obj)
+        public void Update(ContactMessage obj)
         {
-            _db.Update(obj);
+            _db.ContactMessages.Update(obj);
         }
     }
 }
