@@ -10,37 +10,44 @@
             </div>
         </div>
     </div> *@
-    <div class="card-body p-4">
+    @* <div class="card-body p-4"> *@
         <div class="container" style="border-radius:5px; background:#f2f2f2; padding:20px;">
-            <form method="post">
-            @* <form action="/action_page.php"> *@
-                <label for="fname">First Name</label>
-                <input type="text" id="fname" name="firstname" placeholder="Your name..">
+            <form method="post" class="row">
+                <div>
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" name="firstname" placeholder="Your name..">
+            <span asp-validation-for="FirstName" class="text-danger"></span>
 
-                <label for="lname">Last Name</label>
-                <input type="text" id="lname" name="lastname" placeholder="Your last name..">
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" name="lastname" placeholder="Your last name..">
+            <span asp-validation-for="LastName" class="text-danger"></span>
 
-                <label for="lname">Email</label>
-                <input type="text" id="email" name="email" placeholder="Your email..">
+            <label for="lname">Email</label>
+            <input type="text" id="email" name="email" placeholder="Your email..">
+            <span asp-validation-for="Email" class="text-danger"></span>
 
-                <label for="country">Country</label>
-                <select id="country" name="country">
-                    <option value="australia">Australia</option>
-                    <option value="canada">New Zealand</option>
-                    <option value="usa">USA</option>
-                    <option value="usa">China</option>
-                </select>
+            <label for="country">Country</label>
+            <select id="country" name="country">
+                <option value="australia">Australia</option>
+                <option value="canada">New Zealand</option>
+                <option value="usa">USA</option>
+                <option value="usa">China</option>
+            </select>
+            <span asp-validation-for="Country" class="text-danger"></span>
 
-                <label for="subject">Subject</label>
-                <input type="text" id="subject" name="subject" placeholder="Write something.."></input>
+            <label for="subject">Subject</label>
+            <input type="text" id="subject" name="subject" placeholder="Write something.."></input>
+            <span asp-validation-for="Subject" class="text-danger"></span>
 
-                <label for="message">Message</label>
-                <textarea id="message" name="message" placeholder="Write something.." style="height:200px"></textarea>
+            <label for="message">Message</label>
+            <textarea id="message" name="message" placeholder="Write something.." style="height:200px"></textarea>
+            <span asp-validation-for="Message" class="text-danger"></span>
 
-                <input type="submit" value="Submit">
+            <input type="submit" value="Submit">
+                </div>
             </form>
         </div>
-    </div>
+    @* </div> *@
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -74,12 +81,17 @@
                 background-color: #45a049;
             }
 
-        /* .container {
+        .container {
             border-radius: 5px;
             background-color: #f2f2f2;
-            padding: 20px; */
+            padding: 20px;
         }
     </style>
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
 
 @*         <div class="row pb-3">
             <div class="col-6"></div>
