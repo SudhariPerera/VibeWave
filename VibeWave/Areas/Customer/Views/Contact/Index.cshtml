@@ -1,4 +1,112 @@
-﻿<div class="container">
+﻿@model VibeWave.Models.Contact
+@{
+    ViewData["Title"] = "Contact Us";
+}
+@* <div class="card shadow border-0 mt-4">无边框、带阴影、顶部留白 
+    <div class="card-header bg-secondary bg-gradient m-lg-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Contact Us</h2>
+            </div>
+        </div>
+    </div> *@
+    <div class="card-body p-4">
+        <div class="container" style="border-radius:5px; background:#f2f2f2; padding:20px;">
+            <form method="post">
+            @* <form action="/action_page.php"> *@
+                <label for="fname">First Name</label>
+                <input type="text" id="fname" name="firstname" placeholder="Your name..">
+
+                <label for="lname">Last Name</label>
+                <input type="text" id="lname" name="lastname" placeholder="Your last name..">
+
+                <label for="lname">Email</label>
+                <input type="text" id="email" name="email" placeholder="Your email..">
+
+                <label for="country">Country</label>
+                <select id="country" name="country">
+                    <option value="australia">Australia</option>
+                    <option value="canada">New Zealand</option>
+                    <option value="usa">USA</option>
+                    <option value="usa">China</option>
+                </select>
+
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" placeholder="Write something.."></input>
+
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="Write something.." style="height:200px"></textarea>
+
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        input[type=text], select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 6px;
+            margin-bottom: 16px;
+            resize: vertical;
+        }
+
+        input[type=submit] {
+            background-color: #04AA6D;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            input[type=submit]:hover {
+                background-color: #45a049;
+            }
+
+        /* .container {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px; */
+        }
+    </style>
+
+@*         <div class="row pb-3">
+            <div class="col-6"></div>
+            <div class="col-6 text-end">
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i>Create Category
+                </a>
+            </div>
+        </div>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Category Name</th>
+                    <th>Display Order</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var obj in Model.OrderBy(u=>u.DisplayOrder))
+
+            </tbody>
+        </table>
+    </div>
+</div> *@
+
+
+@* <div class="container">
     <form action="/action_page.php">
         <label for="fname">First Name</label>
         <input type="text" id="fname" name="firstname" placeholder="Your name..">
@@ -6,56 +114,24 @@
         <label for="lname">Last Name</label>
         <input type="text" id="lname" name="lastname" placeholder="Your last name..">
 
+        <label for="lname">Email</label>
+        <input type="text" id="email" name="email" placeholder="Your email..">
+
         <label for="country">Country</label>
         <select id="country" name="country">
             <option value="australia">Australia</option>
             <option value="canada">New Zealand</option>
             <option value="usa">USA</option>
+            <option value="usa">China</option>
         </select>
 
         <label for="subject">Subject</label>
-        <textarea id="subject" name="subject" placeholder="Write something.." style="height:200px"></textarea>
+        <input type="text" id="subject" name="subject" placeholder="Write something.."></input>
+
+        <label for="subject">Subject</label>
+        <textarea id="message" name="message" placeholder="Write something.." style="height:200px"></textarea>
 
         <input type="submit" value="Submit">
     </form>
-</div>
+</div> *@
 
-<style>
-    body {
-        font-family: Arial, Helvetica, sans-serif;
-    }
-
-    * {
-        box-sizing: border-box;
-    }
-
-    input[type=text], select, textarea {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-        margin-top: 6px;
-        margin-bottom: 16px;
-        resize: vertical;
-    }
-
-    input[type=submit] {
-        background-color: #04AA6D;
-        color: white;
-        padding: 12px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-        input[type=submit]:hover {
-            background-color: #45a049;
-        }
-
-    .container {
-        border-radius: 5px;
-        background-color: #f2f2f2;
-        padding: 20px;
-    }
-</style>
