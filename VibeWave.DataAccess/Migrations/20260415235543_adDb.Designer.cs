@@ -12,8 +12,8 @@ using VibeWave.Data;
 namespace VibeWave.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260415233737_InitialDatabase")]
-    partial class InitialDatabase
+    [Migration("20260415235543_adDb")]
+    partial class adDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
