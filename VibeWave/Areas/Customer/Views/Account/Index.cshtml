@@ -1,0 +1,64 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model IdentityUser
+@{
+    ViewData["Title"] = "My Account";
+}
+<h2>My Account</h2>
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient m-lg-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">My Account</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="border p-3">
+            <div class="col-6"></div>
+            <div class="col-6 text-end"></div>    
+        </div>
+        <div class="border p-3">
+            @* User Name *@
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">User Name</div>
+                <div class="col-md-9">@Model.UserName</div>
+            </div>
+            @* Email *@
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">Email</div>
+                <div class="col-md-9">@Model.Email</div>
+            </div>
+            @* Email Confirm *@
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">Email Confirm</div>
+                <div class="col-md-9">
+                    @if(Model.EmailConfirmed)
+                    {
+                        <span class="badge bg-success">Confirmed</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">Not Confirmed</span>
+                    }
+                </div>
+            </div>
+            @* Phone Number *@
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">Phone Number</div>
+                <div class="col-md-9">@(Model.PhoneNumber ?? "Not provided")</div>
+            </div>
+            @* Button *@
+            <div class="row pt-2">
+                <div class="col-6 col-md-3">
+                    <a asp-area="Customer" asp-controller="Home" asp-action="Index" class="btn btn-primary form-control">Bake to Home</a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <form asp-action="Logout" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-secondary border form-control">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

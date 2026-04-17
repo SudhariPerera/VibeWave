@@ -15,11 +15,11 @@ namespace VibeWave.Areas.Customer.Controllers
         //{
         //    _unitOfWork = unitOfWork;
         //}
-        private readonly UserManager<IdentityUser> _userManeger;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         public AccountController(UserManager<IdentityUser>userManager,SignInManager<IdentityUser>signInManager)
         {
-            _userManeger = userManager;
+            _userManager = userManager;
             _signInManager = signInManager;
         }
 
@@ -43,9 +43,10 @@ namespace VibeWave.Areas.Customer.Controllers
                 var user = new IdentityUser
                 {
                     UserName = obj.Email,
-                    Email = obj.Email
+                    Email = obj.Email,
+                    PhoneNumber=obj.PhoneNumber
                 };
-                var result = await _userManeger.CreateAsync(user, obj.Password);
+                var result = await _userManager.CreateAsync(user, obj.Password);
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent:false);//Cookie（关闭浏览器即退出）
@@ -74,7 +75,12 @@ namespace VibeWave.Areas.Customer.Controllers
             ViewBag.ReturnUrl = returnUrl;
             if(ModelState.IsValid)
             {
-                var result=await _signInManager.PasswordSignInAsync(obj.Email,obj.Password,obj.RememberMe,lockoutOnFailure:false);
+                var result=await _signInManager.PasswordSignInAsync(
+                    obj.Email,
+                    obj.Password,
+                    obj.RememberMe,
+                    lockoutOnFailure:false
+                    );
                 if (result.Succeeded)
                 {
                     TempData["success"] = "Login successful";
@@ -98,6 +104,16 @@ namespace VibeWave.Areas.Customer.Controllers
             await _signInManager.SignOutAsync();
             TempData["success"] = "You have been logged out.";
             return RedirectToAction("Index", "Home");
+        }
+        //get customer, account, login
+        public async Task<IActionResult>Index()
+        {
+            var user=await _userManager.GetUserAsync(User);
+            if(user==null)
+            {
+                return RedirectToAction("Login");
+            }
+            return View(user);
         }
     }
 }
