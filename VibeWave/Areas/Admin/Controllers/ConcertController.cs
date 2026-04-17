@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using VibeWave.Data;
+using VibeWave.DataAccess.Repository;
 using VibeWave.DataAccess.Repository.IRepository;
 using VibeWave.Models;
 
@@ -21,6 +22,7 @@ namespace VibeWave.Areas.Admin.Controllers
             return View(objConcertList);
         }
 
+        // GET: Create
         public IActionResult Create( )
         {
             IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
@@ -51,6 +53,8 @@ namespace VibeWave.Areas.Admin.Controllers
         //}
         public IActionResult Create(Concert obj)
         {
+            ModelState.Remove("Category");
+
             if (ModelState.IsValid)
             {
                 _unitOfWork.Concert.Add(obj);
@@ -58,9 +62,18 @@ namespace VibeWave.Areas.Admin.Controllers
                 TempData["success"] = "Concert Details Created Successfully";
                 return RedirectToAction("Index");
             }
+
+            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+            {
+                Text = u.Name,
+                Value = u.CategoryId.ToString()
+            });
+            ViewBag.CategoryList = CategoryList;
+
             return View(obj);
         }
 
+        
         //EDIT BUTTON
         public IActionResult Edit(int id)
         {
@@ -73,21 +86,40 @@ namespace VibeWave.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
+            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+            {
+                Text = u.Name,
+                Value = u.CategoryId.ToString(),
+                
+            });
+            ViewBag.CategoryList = CategoryList;
+
             return View(concertFromDb);
         }
 
         [HttpPost]
         public IActionResult Edit(Concert obj)
         {
-            if(ModelState.IsValid)
+            ModelState.Remove("Category");
+
+            if (ModelState.IsValid)
             {
                 _unitOfWork.Concert.Update(obj);
                 _unitOfWork.Save();
                 TempData["success"] = " Concert Details Updated Successfully";
                 return RedirectToAction("Index");
             }
+            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+            {
+                Text = u.Name,
+                Value = u.CategoryId.ToString(),
+            });
+            ViewBag.CategoryList = CategoryList;
+
             return View();
         }
+
 
         //Delete Button
         public IActionResult Delete(int? id)
