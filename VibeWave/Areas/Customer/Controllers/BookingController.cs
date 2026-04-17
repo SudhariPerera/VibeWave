@@ -43,7 +43,7 @@ namespace VibeWave.Areas.Customer.Controllers
         }
 
         // POST Create
-        //[HttpPost]
+        [HttpPost]
         //public IActionResult Create(Booking booking)
         //{
         //    var concert = _unitOfWork.Concert.Get(u => u.Id == booking.ConcertId);
