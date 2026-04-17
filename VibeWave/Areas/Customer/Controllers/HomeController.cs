@@ -67,10 +67,10 @@ namespace VibeWave.Areas.Customer.Controllers
         }
 
 
-        //        public IActionResult Privacy()
-        //        {
-        //            return View();
-        //        }
+        public IActionResult Calender()
+        {
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
