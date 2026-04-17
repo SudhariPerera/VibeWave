@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VibeWave.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace VibeWave.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -16,6 +17,7 @@ namespace VibeWave.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);//AI1. 必须首先调用基类方法，让 Identity 完成自己的配置（如主键等）[reference:2]
             modelBuilder.Entity<Concert>().HasData(
                 new Concert
                 {
