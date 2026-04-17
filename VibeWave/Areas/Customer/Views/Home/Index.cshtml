@@ -1,5 +1,5 @@
 ﻿@using VibeWave.Models
-@model List<Concert>
+@model VibeWave.Models.HomeIndexViewModel
 
 @{
     ViewData["Title"] = "Home Page";
@@ -10,11 +10,39 @@
     @* <h3>Upcoming Concerts</h3> *@
 </div>
 
-<div class="container">
-    @if (Model != null && Model.Any())
+<div class="container mt-4">
+    <form method="get" asp-action="index" class="row mb-4 g-2 align-items-end">
+        <div class="col-md-5">
+            <label asp-for="SearchString" class="form-label">Search</label>
+            <input asp-for="SearchString" type="text" class="form-control" placeholder="concert name or actor..." /></input>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="CategoryId" class="form-label">Category</label>
+            <select asp-for="CategoryId" class="form-select"asp-items="ViewBag.CategoryList">
+                <option value="">--All Categories--</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100">
+                @* Bootstrap Icons *@
+                <i class="bi bi-search"></i>Apply
+            </button>
+            @* not null or choose one which is expect all category *@
+            @if(!string.IsNullOrEmpty(Model.SearchString)||(Model.CategoryId.HasValue && Model.CategoryId>0))
+            {
+                <a asp-action="Index"class="btn btn-secondary w-100 mt-2">Clear All</a>
+            }
+        </div>
+    </form>
+    @if (!string.IsNullOrEmpty(Model.SearchString) || (Model.CategoryId.HasValue && Model.CategoryId > 0))
+    {
+        @* show how many results are found *@
+        <p class="text-muted">Found @(Model.Concerts?.Count ?? 0) result(s)</p>
+    }
+    @if (Model.Concerts != null && Model.Concerts.Any())
     {
         <div class="row">
-            @foreach (var concert in Model.OrderBy(c => c.DisplayDate))
+            @foreach (var concert in Model.Concerts.OrderBy(c => c.DisplayDate))
             {
                 <div class="col-md-4 mb-3">
                     <div class="card" style="height: 300px;">
