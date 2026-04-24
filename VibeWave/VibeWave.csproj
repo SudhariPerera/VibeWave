@@ -24,4 +24,8 @@
     <ProjectReference Include="..\VibeWave.DataAccess\VibeWave.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\concert\" />
+  </ItemGroup>
+
 </Project>

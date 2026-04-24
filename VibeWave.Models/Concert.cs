@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using VibeWave.Models;
@@ -20,11 +21,6 @@ namespace VibeWave.Models
         [DisplayName("Actor Name")]
         public string ActorName { get; set; }
 
-        //[Required]
-        //[MaxLength(100)]
-        //[DisplayName("Concert Category")]
-        //public string ConcertCategory { get; set; }
-        //Cancel ConcertCategory filed，change to use CategoryId to connect foreign Key and Category table
 
         [Required]
         [MaxLength(100)]
@@ -56,7 +52,11 @@ namespace VibeWave.Models
 
         //navigation property
         [ForeignKey("CategoryId")]
+        [ValidateNever]
         public Category Category { get; set; }
         //这是一个 导航属性。它不会直接映射为数据库列，而是允许你在代码中通过 Concert 对象直接访问它所属的 Category 对象。例如：concert.Category.Name 可以获取到分类名称。
+
+        [ValidateNever]
+        public string ConcertImageUrl { get; set; }
     }
 }

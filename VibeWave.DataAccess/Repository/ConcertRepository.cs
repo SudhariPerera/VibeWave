@@ -23,7 +23,20 @@ namespace VibeWave.DataAccess.Repository
 
         public void Update(Concert obj)
         {
-            _db.Update(obj);
+            var objFromDb = _db.Concert.FirstOrDefault(u => u.Id == obj.Id);
+            if (objFromDb != null)
+            {
+                objFromDb.ConcertName = obj.ConcertName;
+                objFromDb.ActorName = obj.ActorName;
+                objFromDb.Category = obj.Category;
+                objFromDb.ConcertLocation = obj.ConcertLocation;
+                objFromDb.DisplayDate = obj.DisplayDate;
+                objFromDb.DisplayTime = obj.DisplayTime;
+                if(obj.ConcertImageUrl != null)
+                {
+                    objFromDb.ConcertImageUrl = obj.ConcertImageUrl;
+                }
+            }
         }
     }
 }

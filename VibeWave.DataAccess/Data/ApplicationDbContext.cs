@@ -28,7 +28,8 @@ namespace VibeWave.Data
                     DisplayDate = new DateOnly(2026, 05, 01),
                     DisplayTime = new TimeOnly(00, 20),
                     TicketPrice = 50,
-                    CategoryId = 1
+                    CategoryId = 1,
+                    ConcertImageUrl= ""
                 },
                 new Concert
                 {
@@ -39,7 +40,8 @@ namespace VibeWave.Data
                     DisplayDate = new DateOnly(2026, 05, 01),
                     DisplayTime = new TimeOnly(00, 20),
                     TicketPrice = 50,
-                    CategoryId = 2
+                    CategoryId = 2,
+                    ConcertImageUrl = ""
                 },
                 new Concert
                 {
@@ -50,24 +52,30 @@ namespace VibeWave.Data
                     DisplayDate = new DateOnly(2026, 05, 01),
                     DisplayTime = new TimeOnly(00, 20),
                     TicketPrice = 50,
-                    CategoryId = 3
+                    CategoryId = 3,
+                    ConcertImageUrl = ""
                 }
                 );
             modelBuilder.Entity<Category>().HasData(
                 new Category
                 {
                     CategoryId = 1,
-                    Name = "Action",
+                    Name = "Pop",
                 },
                 new Category
                 {
                     CategoryId = 2,
-                    Name = "Sci-Fi",
+                    Name = "Classical",
                 },
                 new Category
                 {
                     CategoryId = 3,
-                    Name = "History",
+                    Name = "Theatrical",
+                },
+                new Category
+                {
+                    CategoryId = 4,
+                    Name = "Opera",
                 }
                 );
         }

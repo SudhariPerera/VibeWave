@@ -12,8 +12,8 @@ using VibeWave.Data;
 namespace VibeWave.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260417092411_AddIdentityTables")]
-    partial class AddIdentityTables
+    [Migration("20260423233537_addImageToConcert")]
+    partial class addImageToConcert
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -286,17 +286,22 @@ namespace VibeWave.DataAccess.Migrations
                         new
                         {
                             CategoryId = 1,
-                            Name = "Action"
+                            Name = "Pop"
                         },
                         new
                         {
                             CategoryId = 2,
-                            Name = "Sci-Fi"
+                            Name = "Classical"
                         },
                         new
                         {
                             CategoryId = 3,
-                            Name = "History"
+                            Name = "Theatrical"
+                        },
+                        new
+                        {
+                            CategoryId = 4,
+                            Name = "Opera"
                         });
                 });
 
@@ -315,6 +320,10 @@ namespace VibeWave.DataAccess.Migrations
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ConcertImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcertLocation")
                         .IsRequired()
@@ -347,6 +356,7 @@ namespace VibeWave.DataAccess.Migrations
                             Id = 1,
                             ActorName = "ABC",
                             CategoryId = 1,
+                            ConcertImageUrl = "",
                             ConcertLocation = "A",
                             ConcertName = "Come Together - Born to Run - Bruce Springsteen",
                             DisplayDate = new DateOnly(2026, 5, 1),
@@ -358,6 +368,7 @@ namespace VibeWave.DataAccess.Migrations
                             Id = 2,
                             ActorName = "ABC",
                             CategoryId = 2,
+                            ConcertImageUrl = "",
                             ConcertLocation = "A",
                             ConcertName = "Kyla Cobbler - Not My Lemons",
                             DisplayDate = new DateOnly(2026, 5, 1),
@@ -369,6 +380,7 @@ namespace VibeWave.DataAccess.Migrations
                             Id = 3,
                             ActorName = "ABC",
                             CategoryId = 3,
+                            ConcertImageUrl = "",
                             ConcertLocation = "A",
                             ConcertName = "Nurse Georgie Carroll - Infectious",
                             DisplayDate = new DateOnly(2026, 5, 1),

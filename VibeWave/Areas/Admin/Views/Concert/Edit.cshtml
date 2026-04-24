@@ -1,4 +1,4 @@
-﻿@using VibeWave.Models
+﻿@* @using VibeWave.Models
 @model Concert
 <div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
@@ -11,9 +11,9 @@
     <div class="card-body p-4">
         <form method="post" asp-action="Edit">
             <input asp-for="Id" hidden />
-            <div class="border p-3 mt-4">
+            <div class="border p-3 mt-4"> *@
                 @*<div asp-validation-summary="All"></div>*@
-                <div class="py-2 col-12">
+                @* <div class="py-2 col-12">
                     <label asp-for="ConcertName" class="ms-2"> </label>
                     <input asp-for="ConcertName" class="form-control border-0 shadow" />
                     <span asp-validation-for="ConcertName" class="text-danger"></span>
@@ -22,13 +22,13 @@
                     <input asp-for="ActorName" class="form-control border-0 shadow" />
                     <span asp-validation-for="ActorName" class="text-danger"></span>
                 </div>
-                </div>
+                </div> *@
                 @* <div class="py-2 col-12">
                     <label asp-for="ConcertCategory" class="ms-2"> </label>
                     <input asp-for="ConcertCategory" class="form-control border-0 shadow" />
                     <span asp-validation-for="ConcertCategory" class="text-danger"></span>
                 </div> *@
-                <div class="py-2 col-12">
+@*                 <div class="py-2 col-12">
                     <label asp-for="ConcertLocation" class="ms-2"> </label>
                     <input asp-for="ConcertLocation" class="form-control border-0 shadow" />
                     <span asp-validation-for="ConcertLocation" class="text-danger"></span>
@@ -76,4 +76,4 @@
     @{
         <partial name="_ValidationScriptsPartial" />
     }
-}
+} *@

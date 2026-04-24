@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using VibeWave.Data;
 using VibeWave.DataAccess.Repository;
 using VibeWave.DataAccess.Repository.IRepository;
 using VibeWave.Models;
+using VibeWave.Models.ViewModels;
 
 namespace VibeWave.Areas.Admin.Controllers
 {
@@ -12,113 +14,139 @@ namespace VibeWave.Areas.Admin.Controllers
     public class ConcertController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ConcertController(IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+        public ConcertController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
         public IActionResult Index()
         {
-            List<Concert> objConcertList = _unitOfWork.Concert.GetAll().ToList();
+            List<Concert> objConcertList = _unitOfWork.Concert.GetAll(includeProperties:"Category").ToList();
             return View(objConcertList);
         }
 
         // GET: Create
-        public IActionResult Create( )
+        public IActionResult Upsert(int? id )
         {
-            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+            ConcertVM concertVM = new()
             {
-                Text = u.Name,
-                Value=u.CategoryId.ToString()
-            });
-            ViewBag.CategoryList = CategoryList;
-             return View();
-        }
-
-        [HttpPost]
-        //public IActionResult Create(Concert obj)
-        //{
-        //    if (obj.ConcertName == obj.ConcertName.ToString())
-        //    {
-        //        ModelState.AddModelError("ConcertName", "The Concert Category cannot exactly match with the Concert Name");
-        //    }
-        //    if (ModelState.IsValid)
-        //    {
-        //        _unitOfWork.Concert.Add(obj);
-        //        _unitOfWork.Save();
-        //        TempData["success"] = " Concert Details Created Successfully";
-        //        return RedirectToAction("Index");
-        //   }
-        //    return View();
-
-        //}
-        public IActionResult Create(Concert obj)
-        {
-            ModelState.Remove("Category");
-
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.Concert.Add(obj);
-                _unitOfWork.Save();
-                TempData["success"] = "Concert Details Created Successfully";
-                return RedirectToAction("Index");
-            }
-
-            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
-            {
-                Text = u.Name,
-                Value = u.CategoryId.ToString()
-            });
-            ViewBag.CategoryList = CategoryList;
-
-            return View(obj);
-        }
-
-        
-        //EDIT BUTTON
-        public IActionResult Edit(int id)
-        {
+                CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.CategoryId.ToString()
+                }),
+                Concert = new Concert()
+            };
             if (id == null || id == 0)
             {
-                return NotFound();
+                return View(concertVM);
             }
-            Concert? concertFromDb = _unitOfWork.Concert.Get(u => u.Id == id);
-            if (concertFromDb == null)
+            else
             {
-                return NotFound();
+                concertVM.Concert = _unitOfWork.Concert.Get(u => u.CategoryId == id);
+                return View(concertVM);
             }
-
-            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
-            {
-                Text = u.Name,
-                Value = u.CategoryId.ToString(),
-                
-            });
-            ViewBag.CategoryList = CategoryList;
-
-            return View(concertFromDb);
         }
 
         [HttpPost]
-        public IActionResult Edit(Concert obj)
+        public IActionResult Create(ConcertVM concertVM, IFormFile? file)
         {
-            ModelState.Remove("Category");
-
             if (ModelState.IsValid)
             {
-                _unitOfWork.Concert.Update(obj);
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                if (file != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string productPath = Path.Combine(wwwRootPath, @"images\concert");
+
+                    if (!string.IsNullOrEmpty(concertVM.Concert.ConcertImageUrl))
+                    {
+                        //delete the old image by getting the path of that image
+                        var oldImagePath = Path.Combine(wwwRootPath, concertVM.Concert.ConcertImageUrl.Trim('\\'));
+
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+
+                    }
+                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                    concertVM.Concert.ConcertImageUrl = @"\images\product\" + fileName;
+                }
+                if (concertVM.Concert.Id == 0)
+                {
+                    _unitOfWork.Concert.Add(concertVM.Concert);
+                }
+                else
+                {
+                    _unitOfWork.Concert.Update(concertVM.Concert);
+                }
                 _unitOfWork.Save();
-                TempData["success"] = " Concert Details Updated Successfully";
+                TempData["success"] = "Product Created successfully";
                 return RedirectToAction("Index");
             }
-            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+            else
             {
-                Text = u.Name,
-                Value = u.CategoryId.ToString(),
-            });
-            ViewBag.CategoryList = CategoryList;
-
-            return View();
+                concertVM.CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.CategoryId.ToString()
+                });
+                return View(concertVM);
+            }
         }
+
+
+        ////EDIT BUTTON
+        //public IActionResult Edit(int id)
+        //{
+        //    if (id == null || id == 0)
+        //    {
+        //        return NotFound();
+        //    }
+        //    Concert? concertFromDb = _unitOfWork.Concert.Get(u => u.Id == id);
+        //    if (concertFromDb == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+        //    {
+        //        Text = u.Name,
+        //        Value = u.CategoryId.ToString(),
+                
+        //    });
+        //    ViewBag.CategoryList = CategoryList;
+
+        //    return View(concertFromDb);
+        //}
+
+        //[HttpPost]
+        //public IActionResult Edit(Concert obj)
+        //{
+        //    ModelState.Remove("Category");
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        _unitOfWork.Concert.Update(obj);
+        //        _unitOfWork.Save();
+        //        TempData["success"] = " Concert Details Updated Successfully";
+        //        return RedirectToAction("Index");
+        //    }
+        //    IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+        //    {
+        //        Text = u.Name,
+        //        Value = u.CategoryId.ToString(),
+        //    });
+        //    ViewBag.CategoryList = CategoryList;
+
+        //    return View();
+        //}
 
 
         //Delete Button
