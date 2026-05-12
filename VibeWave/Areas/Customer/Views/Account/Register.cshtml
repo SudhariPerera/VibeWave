@@ -27,6 +27,7 @@
                     <label asp-for="Password" class="ms-2"></label>
                     <input asp-for="Password" class="form-control border-0 shadow"></input>
                     <span asp-validation-for="Password" class="text-danger"></span>
+                    <small class="text-muted ms-2">Password must be at least 6 characters and contain a digit.</small>
                 </div>
 
                 <div class="mb-3 row p-1">
@@ -49,6 +50,17 @@
                         <a asp-action="Login" class="btn btn-primary form-control">Already have an account?</a>
                     </div>
                 </div>
+
+                @* 当用户注册后未收到邮箱确认邮件时，可以点击此链接跳转到重新发送确认邮件的页面。 *@
+                <div class="row pt-3">
+                    <div class="col-12">
+                        <hr />
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="ResendEmailConfirmation" class="text-muted small">Resend email confirmation</a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </form>
     </div>

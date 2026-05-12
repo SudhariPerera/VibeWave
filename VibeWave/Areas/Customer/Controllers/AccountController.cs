@@ -79,7 +79,7 @@ namespace VibeWave.Areas.Customer.Controllers
                     obj.Email,
                     obj.Password,
                     obj.RememberMe,
-                    lockoutOnFailure:false
+                    lockoutOnFailure:true
                     );
                 if (result.Succeeded)
                 {
@@ -89,6 +89,11 @@ namespace VibeWave.Areas.Customer.Controllers
                         return Redirect(returnUrl);
                     }
                     return RedirectToAction("Index","Home");//改变浏览器 URL，使其指向首页。防止刷新时重复执行 POST 操作。
+                }
+                if (result.IsLockedOut)
+                {
+                    TempData["error"] = "Your account has been locked out due to multiple failed attempts. Please try again in 5 minutes.";
+                    return View(obj);
                 }
                 else
                 {

@@ -29,7 +29,7 @@ namespace VibeWave.Models
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]//to compare the confirm one is same or not with privious one.
         public string ConfirmPassword { get; set; }
 
-        [Phone(ErrorMessage = "Invalid Phone Number")]
+        [DataType(DataType.PhoneNumber)]   // 仅提示类型，不验证格式
         [Display(Name = "Phone Number (optional)")]
         public string PhoneNumber { get; set; }
     }
