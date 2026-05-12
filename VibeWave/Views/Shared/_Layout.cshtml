@@ -98,6 +98,10 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <script src="https://cdn.tiny.cloud/1/28eb143hof210r4o8e6so4a5fugn7pi0i2u915awftcra43m/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    @if (IsSectionDefined("Scripts"))
+    {
+        @RenderSection("Scripts")
+    }
 </body>
 </html>

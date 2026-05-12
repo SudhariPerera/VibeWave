@@ -16,6 +16,9 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options=>
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = false;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);  // 锁定 5 分钟
+    options.Lockout.MaxFailedAccessAttempts = 5;  // 5 次失败后锁定
+    options.Lockout.AllowedForNewUsers = true;
 })
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -34,7 +37,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+ 
 app.UseRouting();
 app.UseAuthentication(); 
 

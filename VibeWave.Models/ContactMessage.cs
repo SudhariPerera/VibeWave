@@ -41,7 +41,7 @@ namespace VibeWave.Models
 
         [Required]
         [Display(Name = "Message")]
-        [StringLength(2000)]
+        [StringLength(5000)]
         public string Message { get; set; }
     }
 }

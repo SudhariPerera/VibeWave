@@ -19,7 +19,7 @@ namespace VibeWave.DataAccess.Repository
         {
             _db = db;
             dbSet = _db.Set<T>();
-            _db.Concert.Include(u => u.Category).Include(u => u.CategoryId);
+            //_db.Concert.Include(u => u.Category).Include(u => u.CategoryId);
         }
 
         public void Add(T entity)
