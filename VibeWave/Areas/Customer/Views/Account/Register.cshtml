@@ -15,7 +15,7 @@
     <div class="card-body p-4">
         <form method="post" class="row">
             <div class="border p-3">
-                <div asp-validation-summary="All" class="text-danger"></div>
+                <div asp-validation-summary="All" class="text-danger"></div> 
 
                 <div class="mb-3 row p-1">
                     <label asp-for="Email" class="ms-2"></label>
@@ -37,8 +37,8 @@
 
                 <div class="mb-3 row p-1">
                     <label asp-for="PhoneNumber" class="ms-2"></label>
-                    <input asp-for="PhoneNumber" class="form-control border-0 shadow" placeholder="(optional)"></input>
-                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    <input asp-for="PhoneNumber" class="form-control border-0 shadow" placeholder="(optional)" data-val="false">
+                     @* <span asp-validation-for="PhoneNumber" class="text-danger"></span> *@
                 </div>
 
                 <div class="row pt-2">
