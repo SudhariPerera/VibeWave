@@ -31,6 +31,6 @@ namespace VibeWave.Models
 
         [Phone(ErrorMessage = "Invalid Phone Number")]
         [Display(Name = "Phone Number (optional)")]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
     }
 }
