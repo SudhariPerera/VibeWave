@@ -31,6 +31,6 @@ namespace VibeWave.Models
 
         [Display(Name = "Phone Number (optional)")]
         [StringLength(50)]   // 限制长度但不强制格式
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
     }
 }
