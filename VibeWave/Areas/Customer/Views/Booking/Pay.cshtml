@@ -1,0 +1,46 @@
+﻿@model VibeWave.Models.Booking
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4>Payment Page</h4>
+                </div>
+
+                <div class="card-body">
+
+                    <h5>Concert: @Model.Concert?.ConcertName</h5>
+
+                    <hr />
+
+                    <p><strong>Name:</strong> @Model.CustomerName</p>
+                    <p><strong>Email:</strong> @Model.Email</p>
+                    <p><strong>Tickets:</strong> @Model.NumberOfTickets</p>
+
+                    <h4 class="text-success">
+                        Total: $@Model.TotalPrice
+                    </h4>
+
+                    <hr />
+
+                    <form asp-action="PayConfirm" method="post">
+                        <input type="hidden" name="id" value="@Model.Id" />
+
+                        <button type="submit" class="btn btn-success w-100">
+                            Pay Now
+                        </button>
+                    </form>
+
+                    <a asp-action="BookingDetails" asp-route-id="@Model.Id"
+                       class="btn btn-secondary w-100 mt-2">
+                        Cancel
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

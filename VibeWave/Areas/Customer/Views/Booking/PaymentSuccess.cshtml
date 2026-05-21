@@ -1,0 +1,28 @@
+﻿@model VibeWave.Models.Booking
+
+<div class="container mt-5 text-center">
+
+    <div class="card p-4 shadow">
+
+        <h2 class="text-success">Payment Successful 🎉</h2>
+
+        <p>Thank you, <strong>@Model.CustomerName</strong></p>
+
+        <p>Your booking for <strong>@Model.Concert?.ConcertName</strong> is confirmed.</p>
+
+        <p class="text-muted">
+            Status: @if (Model.IsPaid)
+            {
+                <span class="text-success">Paid</span>
+            }
+        </p>
+
+        <a asp-action="BookingDetails"
+           asp-route-id="@Model.Id"
+           class="btn btn-primary mt-3">
+            View Ticket
+        </a>
+
+    </div>
+
+</div>

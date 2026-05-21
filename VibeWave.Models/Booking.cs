@@ -38,6 +38,8 @@ namespace VibeWave.Models
         [Column(TypeName = "decimal(10,2)")]
         public decimal TotalPrice { get; set; }
 
-        public string? QrCodeUrl { get; set; } 
+        public string? QrCodeUrl { get; set; }
+
+        public bool IsPaid { get; set; } = false;
     }
 }

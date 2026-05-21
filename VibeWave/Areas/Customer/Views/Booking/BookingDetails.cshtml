@@ -15,6 +15,16 @@
                     <p><strong>Number Of Tickets :</strong> @Model.NumberOfTickets</p>
                     <p><strong>TotalPrice :</strong> @Model.TotalPrice</p>
 
+                    <p><strong>Status:</strong>
+                            @if (Model.IsPaid)
+                            {
+                                <span class="text-success">Paid</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">Not Paid</span>
+                            }
+                    </p>
                     <div class="w3-container">
                         <div class="w3-panel w3-pale-blue w3-leftbar w3-rightbar w3-border-blue">
                             <p><strong>Concer Name :</strong>@Model.Concert?.ConcertName</p>
@@ -30,14 +40,19 @@
                     }
 
                     <form method="post" action=" ">
-                        
-                        <button type="submit" class="btn btn-success">Pay Now</button>
+
+                        <a asp-controller="Booking" asp-action="Pay" asp-route-id="@Model.Id" class="btn btn-success"> Pay Now
+                         </a>
                         <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
                             <i class="bi bi-house-door"></i> Back to Home
                         </a>
 
                         <a asp-controller="Booking" asp-action="Index" class="btn btn-primary">
                             <i class="bi bi-cart2"></i> Back to Bookings
+                        </a>
+
+                        <a asp-action="DownloadQr" asp-route-id="@Model.Id" class="btn btn-dark">
+                             Download QR
                         </a>
                     </form>
                 </div>
