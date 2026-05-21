@@ -19,7 +19,7 @@ namespace VibeWave.DataAccess.Repository
 
         public void Update(Booking obj)
         {
-            _db.Update(obj);
+            _db.Bookings.Update(obj);
         }
     }
 }

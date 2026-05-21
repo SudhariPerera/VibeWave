@@ -252,30 +252,34 @@ namespace VibeWave.Areas.Customer.Controllers
             );
 
             if (booking == null)
-                return NotFound();
-
-            // Prevent duplicate payments
-            if (!booking.IsPaid)
             {
-                booking.IsPaid = true;
-                booking.PaymentStatus = "Paid";
-
-                var payment = new Payment
-                {
-                    BookingId = booking.Id,
-                    Amount = booking.TotalPrice,
-                    Currency = "NZD",
-                    PaymentStatus = "Paid",
-                    PaymentDate = DateTime.Now,
-                    PaymentIntentId = Guid.NewGuid().ToString() 
-                };
-
-                _unitOfWork.Payment.Add(payment);
-
-                _unitOfWork.Save();
+                return NotFound();
             }
 
-            return View(booking);
+            // Update booking status
+            booking.IsPaid = true;
+            booking.PaymentStatus = "Paid";
+
+            _unitOfWork.Booking.Update(booking);
+
+            // Create payment record
+            Payment payment = new Payment()
+            {
+                BookingId = booking.Id,
+                Amount = booking.TotalPrice,
+                Currency = "USD",
+                PaymentStatus = "Paid",
+                PaymentDate = DateTime.Now,
+                PaymentIntentId = Guid.NewGuid().ToString()
+            };
+
+            // Save payment
+            _unitOfWork.Payment.Add(payment);
+
+            // Save all changes
+            _unitOfWork.Save();
+
+            return RedirectToAction("BookingDetails", new { id = booking.Id });
         }
     }
 }
