@@ -6,7 +6,7 @@
 
             <div class="card shadow text-center">
 
-                <div class="card-header bg-success text-white">
+                <div class="card-header text-primary text-center">
                     <h2>Payment Successful</h2>
                     <img src="~/images/PaymentSuccess.png" width="65%" />
                 </div>
@@ -19,6 +19,12 @@
                         Your payment for
                         <strong>@Model.Concert?.ConcertName</strong>
                         has been completed successfully.
+                    </p>
+
+                    <p class="mt-3">
+                        Concet on
+                        <strong>@Model.Concert?.DisplayDate</strong> at
+                        <strong>@Model.Concert?.DisplayTime</strong>
                     </p>
 
                     <p>
