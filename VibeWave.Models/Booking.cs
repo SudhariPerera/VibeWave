@@ -43,5 +43,7 @@ namespace VibeWave.Models
         public bool IsPaid { get; set; } = false;
 
         public string PaymentStatus { get; set; } = "Pending";
+
+        public string PaymentMethod { get; set; } = "Online";
     }
 }

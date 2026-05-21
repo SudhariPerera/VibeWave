@@ -69,22 +69,22 @@ namespace VibeWave.Areas.Customer.Controllers
                 _unitOfWork.Booking.Add(booking);
                 _unitOfWork.Save();
 
-                var qrData = new
-                {
-                    BookingId = booking.Id,
-                    Concert = concert.ConcertName,
-                    Location = concert.ConcertLocation,
-                    Date = concert.DisplayDate,
-                    Time = concert.DisplayTime,
-                    Customer = booking.CustomerName,
-                    Tickets = booking.NumberOfTickets,
-                    Total = booking.TotalPrice,
-                    Paid = false
-                };
+                string paymentStatus = booking.IsPaid ? "PAID" : "PENDING";
 
-                string qrText = System.Text.Json.JsonSerializer.Serialize(qrData);
+                string qrText =
+                    $"Booking ID: {booking.Id}\n" +
+                    $"Customer: {booking.CustomerName}\n" +
+                    $"Concert: {concert.ConcertName}\n" +
+                    $"Location: {concert.ConcertLocation}\n" +
+                    $"Date: {concert.DisplayDate}\n" +
+                    $"Time: {concert.DisplayTime}\n" +
+                    $"Tickets: {booking.NumberOfTickets}\n" +
+                    $"Total: ${booking.TotalPrice}\n" +
+                    $"Payment: {paymentStatus}";
 
                 booking.QrCodeUrl = GenerateQrCode(qrText);
+
+                _unitOfWork.Booking.Update(booking);
 
                 _unitOfWork.Save();
 
@@ -251,6 +251,19 @@ namespace VibeWave.Areas.Customer.Controllers
                 includeProperties: "Concert"
             );
 
+            string qrText =
+                $"Booking ID: {booking.Id}\n" +
+                $"Customer: {booking.CustomerName}\n" +
+                $"Concert: {booking.Concert?.ConcertName}\n" +
+                $"Location: {booking.Concert?.ConcertLocation}\n" +
+                $"Date: {booking.Concert?.DisplayDate}\n" +
+                $"Time: {booking.Concert?.DisplayTime}\n" +
+                $"Tickets: {booking.NumberOfTickets}\n" +
+                $"Total: ${booking.TotalPrice}\n" +
+                $"Payment: PAID";
+
+            booking.QrCodeUrl = GenerateQrCode(qrText);
+
             if (booking == null)
             {
                 return NotFound();
@@ -282,6 +295,22 @@ namespace VibeWave.Areas.Customer.Controllers
             }
 
             return View(booking);
+        }
+
+        public IActionResult MarkAsVenuePayment(int id)
+        {
+            var booking = _unitOfWork.Booking.Get(u => u.Id == id);
+
+            if (booking == null)
+                return NotFound();
+
+            booking.PaymentMethod = "Venue";
+            booking.PaymentStatus = "Pay at Venue";
+
+            _unitOfWork.Booking.Update(booking);
+            _unitOfWork.Save();
+
+            return RedirectToAction("BookingDetails", new { id });
         }
     }
 }
