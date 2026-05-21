@@ -56,14 +56,6 @@
                                 </button>
                             }
 
-                            @if (Model.IsPaid)
-                            {
-                                <a asp-action="BookingDetails"
-                                   asp-route-id="@Model.Id"
-                                   class="btn btn-primary">
-                                    View Ticket
-                                </a>
-                            }
                         <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
                             <i class="bi bi-house-door"></i> Back to Home
                         </a>

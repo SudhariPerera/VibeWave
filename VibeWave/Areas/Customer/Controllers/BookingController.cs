@@ -256,30 +256,32 @@ namespace VibeWave.Areas.Customer.Controllers
                 return NotFound();
             }
 
-            // Update booking status
-            booking.IsPaid = true;
-            booking.PaymentStatus = "Paid";
-
-            _unitOfWork.Booking.Update(booking);
-
-            // Create payment record
-            Payment payment = new Payment()
+            // Prevent duplicate payment records
+            if (!booking.IsPaid)
             {
-                BookingId = booking.Id,
-                Amount = booking.TotalPrice,
-                Currency = "USD",
-                PaymentStatus = "Paid",
-                PaymentDate = DateTime.Now,
-                PaymentIntentId = Guid.NewGuid().ToString()
-            };
+                // Update booking
+                booking.IsPaid = true;
+                booking.PaymentStatus = "Paid";
 
-            // Save payment
-            _unitOfWork.Payment.Add(payment);
+                _unitOfWork.Booking.Update(booking);
 
-            // Save all changes
-            _unitOfWork.Save();
+                // Create payment record
+                Payment payment = new Payment()
+                {
+                    BookingId = booking.Id,
+                    Amount = booking.TotalPrice,
+                    Currency = "USD",
+                    PaymentStatus = "Paid",
+                    PaymentDate = DateTime.Now,
+                    PaymentIntentId = Guid.NewGuid().ToString()
+                };
 
-            return RedirectToAction("BookingDetails", new { id = booking.Id });
+                _unitOfWork.Payment.Add(payment);
+
+                _unitOfWork.Save();
+            }
+
+            return View(booking);
         }
     }
 }
