@@ -109,35 +109,7 @@ namespace VibeWave.Areas.Admin.Controllers
             return Json(new { data = objConcertList });
         }
 
-        ////Delete Button
-        //public IActionResult Delete(int? id)
-        //{
-        //    if (id == null || id == 0)
-        //    {
-        //        return NotFound();
-        //    }
-        //    Concert? concertFromDb = _unitOfWork.Concert.Get(u => u.Id == id);
-        //    if (concertFromDb == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(concertFromDb);
-        //}
-
-        //[HttpPost, ActionName("Delete")]
-        //public IActionResult DeletePOST(int? id)
-        //{
-        //    Concert? obj = _unitOfWork.Concert.Get(u => u.Id == id);
-        //    if (obj == null) 
-        //    {
-        //        return NotFound();
-        //    }
-        //    _unitOfWork.Concert.Remove(obj);
-        //    _unitOfWork.Save();
-        //    TempData["success"] = " Concert Details Deleted Successfully";
-        //    return RedirectToAction("Index");
-        //}
-
+        //delete
         [HttpDelete]
         public IActionResult Delete(int? id)
         {
