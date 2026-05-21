@@ -197,7 +197,36 @@ namespace VibeWave.Areas.Customer.Controllers
             if (booking == null)
                 return NotFound();
 
-            return View(booking);
+            var domain = $"{Request.Scheme}://{Request.Host}/";
+
+            var options = new Stripe.Checkout.SessionCreateOptions
+            {
+                PaymentMethodTypes = new List<string> { "card" },
+                LineItems = new List<Stripe.Checkout.SessionLineItemOptions>
+        {
+            new Stripe.Checkout.SessionLineItemOptions
+            {
+                Quantity = booking.NumberOfTickets,
+                PriceData = new Stripe.Checkout.SessionLineItemPriceDataOptions
+                {
+                    Currency = "usd",
+                    UnitAmount = (long)(booking.Concert.TicketPrice * 100),
+                    ProductData = new Stripe.Checkout.SessionLineItemPriceDataProductDataOptions
+                    {
+                        Name = booking.Concert.ConcertName
+                    }
+                }
+            }
+        },
+                Mode = "payment",
+                SuccessUrl = domain + $"Customer/Booking/PaymentSuccess?id={booking.Id}",
+                CancelUrl = domain + $"Customer/Booking/BookingDetails?id={booking.Id}"
+            };
+
+            var service = new Stripe.Checkout.SessionService();
+            var session = service.Create(options);
+
+            return Redirect(session.Url);
         }
 
         [HttpPost]
@@ -217,10 +246,13 @@ namespace VibeWave.Areas.Customer.Controllers
 
         public IActionResult PaymentSuccess(int id)
         {
-            var booking = _unitOfWork.Booking.Get(u => u.Id == id, includeProperties: "Concert");
+            var booking = _unitOfWork.Booking.Get(u => u.Id == id);
 
             if (booking == null)
                 return NotFound();
+
+            booking.IsPaid = true;
+            _unitOfWork.Save();
 
             return View(booking);
         }
