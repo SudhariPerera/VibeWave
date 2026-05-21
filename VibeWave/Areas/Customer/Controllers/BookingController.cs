@@ -147,9 +147,7 @@ namespace VibeWave.Areas.Customer.Controllers
             return Redirect(session.Url);
         }
 
-        // =========================
         // PAYMENT SUCCESS
-        // =========================
         public IActionResult PaymentSuccess(int id)
         {
             var booking = _unitOfWork.Booking.Get(u => u.Id == id, includeProperties: "Concert");
