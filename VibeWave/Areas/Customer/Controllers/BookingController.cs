@@ -151,21 +151,14 @@ namespace VibeWave.Areas.Customer.Controllers
         // =========================
         public IActionResult PaymentSuccess(int id)
         {
-            var booking = _unitOfWork.Booking.Get(
-                u => u.Id == id,
-                includeProperties: "Concert"
-            );
-
-            if (booking == null)
-                return NotFound();
+            var booking = _unitOfWork.Booking.Get(u => u.Id == id, includeProperties: "Concert");
+            if (booking == null) return NotFound();
 
             if (!booking.IsPaid)
             {
                 booking.IsPaid = true;
                 booking.PaymentStatus = "Paid";
                 booking.PaymentMethod = "Online";
-
-                _unitOfWork.Booking.Update(booking);
 
                 var payment = new Payment
                 {
@@ -178,20 +171,27 @@ namespace VibeWave.Areas.Customer.Controllers
                 };
 
                 _unitOfWork.Payment.Add(payment);
-                _unitOfWork.Save();
             }
 
-            var updatedBooking = _unitOfWork.Booking.Get(
-                u => u.Id == id,
-                includeProperties: "Concert"
-            );
+            // regenerate QR based on the current booking instance
+            string qrText =
+                $"Booking ID: {booking.Id}\n" +
+                $"Customer: {booking.CustomerName}\n" +
+                $"Concert: {booking.Concert?.ConcertName}\n" +
+                $"Location: {booking.Concert?.ConcertLocation}\n" +
+                $"Date: {booking.Concert?.DisplayDate}\n" +
+                $"Time: {booking.Concert?.DisplayTime}\n" +
+                $"Tickets: {booking.NumberOfTickets}\n" +
+                $"Total: ${booking.TotalPrice}\n" +
+                $"Payment: PAID";
 
-            GenerateQrForBooking(updatedBooking, updatedBooking.Concert, "PAID");
+            booking.QrCodeUrl = GenerateQrCode(qrText);
 
-            _unitOfWork.Booking.Update(updatedBooking);
+            // only one Update and Save
+            _unitOfWork.Booking.Update(booking);
             _unitOfWork.Save();
 
-            return View(updatedBooking);
+            return View(booking);
         }
 
         // =========================
