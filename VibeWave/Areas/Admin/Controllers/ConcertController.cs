@@ -109,6 +109,7 @@ namespace VibeWave.Areas.Admin.Controllers
             return Json(new { data = objConcertList });
         }
 
+        //delete
         [HttpDelete]
         public IActionResult Delete(int? id)
         {
