@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QRCoder;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using VibeWave.DataAccess.Repository.IRepository;
 using VibeWave.Models;
+using Stripe.Checkout;
 
 namespace VibeWave.Areas.Customer.Controllers
 {
@@ -19,7 +22,9 @@ namespace VibeWave.Areas.Customer.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        // =========================
         // INDEX
+        // =========================
         public IActionResult Index()
         {
             var bookings = _unitOfWork.Booking
@@ -29,7 +34,9 @@ namespace VibeWave.Areas.Customer.Controllers
             return View(bookings);
         }
 
-        // GET: Create
+        // =========================
+        // CREATE (GET)
+        // =========================
         public IActionResult Create(int id)
         {
             var concert = _unitOfWork.Concert.Get(
@@ -38,74 +45,49 @@ namespace VibeWave.Areas.Customer.Controllers
             );
 
             if (concert == null)
-            {
                 return NotFound();
-            }
 
             return View(concert);
         }
 
-        // POST: Create Booking
+        // =========================
+        // CREATE (POST)
+        // =========================
         [HttpPost]
         public IActionResult Create(int ConcertId, string CustomerName, string Email, int NumberOfTickets)
         {
-            try
+            var concert = _unitOfWork.Concert.Get(u => u.Id == ConcertId);
+
+            if (concert == null)
+                return NotFound();
+
+            var booking = new Booking
             {
-                var concert = _unitOfWork.Concert.Get(u => u.Id == ConcertId);
+                ConcertId = ConcertId,
+                CustomerName = CustomerName,
+                Email = Email,
+                NumberOfTickets = NumberOfTickets,
+                TotalPrice = concert.TicketPrice * NumberOfTickets,
+                BookingDate = DateTime.Now,
+                IsPaid = false,
+                PaymentStatus = "Pending",
+                PaymentMethod = "Not Selected"
+            };
 
-                if (concert == null)
-                    return NotFound();
+            _unitOfWork.Booking.Add(booking);
+            _unitOfWork.Save();
 
-                var booking = new Booking
-                {
-                    ConcertId = ConcertId,
-                    CustomerName = CustomerName,
-                    Email = Email,
-                    NumberOfTickets = NumberOfTickets,
-                    TotalPrice = concert.TicketPrice * NumberOfTickets,
-                    BookingDate = DateTime.Now
-                };
+            GenerateQrForBooking(booking, concert, "PENDING");
 
-                _unitOfWork.Booking.Add(booking);
-                _unitOfWork.Save();
+            _unitOfWork.Booking.Update(booking);
+            _unitOfWork.Save();
 
-                string paymentStatus = booking.IsPaid ? "PAID" : "PENDING";
-
-                string qrText =
-                    $"Booking ID: {booking.Id}\n" +
-                    $"Customer: {booking.CustomerName}\n" +
-                    $"Concert: {concert.ConcertName}\n" +
-                    $"Location: {concert.ConcertLocation}\n" +
-                    $"Date: {concert.DisplayDate}\n" +
-                    $"Time: {concert.DisplayTime}\n" +
-                    $"Tickets: {booking.NumberOfTickets}\n" +
-                    $"Total: ${booking.TotalPrice}\n" +
-                    $"Payment: {paymentStatus}";
-
-                booking.QrCodeUrl = GenerateQrCode(qrText);
-
-                _unitOfWork.Booking.Update(booking);
-
-                _unitOfWork.Save();
-
-                return RedirectToAction(nameof(BookingDetails), new { id = booking.Id });
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = "Booking failed: " + ex.Message;
-                return RedirectToAction("Index", "Home", new { area = "Customer" });
-            }
+            return RedirectToAction(nameof(BookingDetails), new { id = booking.Id });
         }
 
-        public IActionResult Verify(int id)
-        {
-            var booking = _unitOfWork.Booking.Get(u => u.Id == id, includeProperties: "Concert");
-            if (booking == null) return NotFound();
-
-            return View(booking);
-        }
-
+        // =========================
         // BOOKING DETAILS
+        // =========================
         public IActionResult BookingDetails(int id)
         {
             var booking = _unitOfWork.Booking.Get(
@@ -119,52 +101,183 @@ namespace VibeWave.Areas.Customer.Controllers
             return View(booking);
         }
 
-        // QR CODE
+        // =========================
+        // STRIPE PAYMENT
+        // =========================
+        public IActionResult Pay(int id)
+        {
+            var booking = _unitOfWork.Booking.Get(
+                u => u.Id == id,
+                includeProperties: "Concert"
+            );
+
+            if (booking == null)
+                return NotFound();
+
+            var domain = $"{Request.Scheme}://{Request.Host}/";
+
+            var options = new SessionCreateOptions
+            {
+                PaymentMethodTypes = new List<string> { "card" },
+                LineItems = new List<SessionLineItemOptions>
+                {
+                    new SessionLineItemOptions
+                    {
+                        Quantity = booking.NumberOfTickets,
+                        PriceData = new SessionLineItemPriceDataOptions
+                        {
+                            Currency = "usd",
+                            UnitAmount = (long)(booking.Concert.TicketPrice * 100),
+                            ProductData = new SessionLineItemPriceDataProductDataOptions
+                            {
+                                Name = booking.Concert.ConcertName
+                            }
+                        }
+                    }
+                },
+                Mode = "payment",
+                SuccessUrl = domain + $"Customer/Booking/PaymentSuccess?id={booking.Id}",
+                CancelUrl = domain + $"Customer/Booking/BookingDetails?id={booking.Id}"
+            };
+
+            var service = new SessionService();
+            var session = service.Create(options);
+
+            return Redirect(session.Url);
+        }
+
+        // =========================
+        // PAYMENT SUCCESS
+        // =========================
+        public IActionResult PaymentSuccess(int id)
+        {
+            var booking = _unitOfWork.Booking.Get(
+                u => u.Id == id,
+                includeProperties: "Concert"
+            );
+
+            if (booking == null)
+                return NotFound();
+
+            if (!booking.IsPaid)
+            {
+                booking.IsPaid = true;
+                booking.PaymentStatus = "Paid";
+                booking.PaymentMethod = "Online";
+
+                _unitOfWork.Booking.Update(booking);
+
+                var payment = new Payment
+                {
+                    BookingId = booking.Id,
+                    Amount = booking.TotalPrice,
+                    Currency = "USD",
+                    PaymentStatus = "Paid",
+                    PaymentDate = DateTime.Now,
+                    PaymentIntentId = Guid.NewGuid().ToString()
+                };
+
+                _unitOfWork.Payment.Add(payment);
+                _unitOfWork.Save();
+            }
+
+            var updatedBooking = _unitOfWork.Booking.Get(
+                u => u.Id == id,
+                includeProperties: "Concert"
+            );
+
+            GenerateQrForBooking(updatedBooking, updatedBooking.Concert, "PAID");
+
+            _unitOfWork.Booking.Update(updatedBooking);
+            _unitOfWork.Save();
+
+            return View(updatedBooking);
+        }
+
+        // =========================
+        // PAY AT VENUE
+        // =========================
+        public IActionResult PayAtVenue(int id)
+        {
+            var booking = _unitOfWork.Booking.Get(
+                u => u.Id == id,
+                includeProperties: "Concert"
+            );
+
+            if (booking == null)
+                return NotFound();
+
+            booking.IsPaid = false;
+            booking.PaymentStatus = "Pay at Venue";
+            booking.PaymentMethod = "Venue";
+
+            GenerateQrForBooking(booking, booking.Concert, "PAY AT VENUE");
+
+            _unitOfWork.Booking.Update(booking);
+            _unitOfWork.Save();
+
+            return RedirectToAction(nameof(BookingDetails), new { id });
+        }
+
+        // =========================
+        // QR GENERATOR (REUSABLE)
+        // =========================
+        private void GenerateQrForBooking(Booking booking, Concert concert, string paymentStatus)
+        {
+            string qrText =
+                $"Booking ID: {booking.Id}\n" +
+                $"Customer: {booking.CustomerName}\n" +
+                $"Concert: {concert.ConcertName}\n" +
+                $"Location: {concert.ConcertLocation}\n" +
+                $"Date: {concert.DisplayDate}\n" +
+                $"Time: {concert.DisplayTime}\n" +
+                $"Tickets: {booking.NumberOfTickets}\n" +
+                $"Total: ${booking.TotalPrice}\n" +
+                $"Payment: {paymentStatus}";
+
+            booking.QrCodeUrl = GenerateQrCode(qrText);
+        }
+
+        // =========================
+        // QR CODE GENERATION
+        // =========================
         private string GenerateQrCode(string text)
         {
-            using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+            using (QRCodeGenerator generator = new QRCodeGenerator())
             {
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(text, QRCodeGenerator.ECCLevel.Q);
-                QRCode qrCode = new QRCode(qrCodeData);
+                QRCodeData data = generator.CreateQrCode(text, QRCodeGenerator.ECCLevel.Q);
+                QRCode code = new QRCode(data);
 
-                using (Bitmap qrImage = qrCode.GetGraphic(20))
+                using (Bitmap bitmap = code.GetGraphic(20))
                 using (MemoryStream ms = new MemoryStream())
                 {
-                    qrImage.Save(ms, ImageFormat.Png);
+                    bitmap.Save(ms, ImageFormat.Png);
                     return "data:image/png;base64," + Convert.ToBase64String(ms.ToArray());
                 }
             }
         }
 
+        // =========================
+        // DOWNLOAD QR
+        // =========================
         public IActionResult DownloadQr(int id)
         {
             var booking = _unitOfWork.Booking.Get(u => u.Id == id);
+
             if (booking == null || string.IsNullOrEmpty(booking.QrCodeUrl))
                 return NotFound();
 
             var base64 = booking.QrCodeUrl.Split(",")[1];
             var bytes = Convert.FromBase64String(base64);
 
-            return File(bytes, "image/png", $"booking-{id}-qr.png");
+            return File(bytes, "image/png", $"ticket-{id}.png");
         }
 
-        public IActionResult MarkAsPaid(int id)
+        // =========================
+        // DELETE
+        // =========================
+        public IActionResult Delete(int id)
         {
-            var booking = _unitOfWork.Booking.Get(u => u.Id == id);
-            if (booking == null) return NotFound();
-
-            booking.IsPaid = true;
-            _unitOfWork.Save();
-
-            return RedirectToAction("BookingDetails", new { id });
-        }
-
-        // DELETE GET
-        public IActionResult Delete(int? id)
-        {
-            if (id == null || id == 0)
-                return NotFound();
-
             var booking = _unitOfWork.Booking.Get(u => u.Id == id);
 
             if (booking == null)
@@ -173,9 +286,8 @@ namespace VibeWave.Areas.Customer.Controllers
             return View(booking);
         }
 
-        // DELETE POST
         [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePOST(int? id)
+        public IActionResult DeletePOST(int id)
         {
             var booking = _unitOfWork.Booking.Get(u => u.Id == id);
 
@@ -187,130 +299,6 @@ namespace VibeWave.Areas.Customer.Controllers
 
             TempData["success"] = "Booking deleted successfully";
             return RedirectToAction(nameof(Index));
-        }
-
-        //Add Payment Action
-        public IActionResult Pay(int id)
-        {
-            var booking = _unitOfWork.Booking.Get(u => u.Id == id, includeProperties: "Concert");
-
-            if (booking == null)
-                return NotFound();
-
-            var domain = $"{Request.Scheme}://{Request.Host}/";
-
-            var options = new Stripe.Checkout.SessionCreateOptions
-            {
-                PaymentMethodTypes = new List<string> { "card" },
-                LineItems = new List<Stripe.Checkout.SessionLineItemOptions>
-        {
-            new Stripe.Checkout.SessionLineItemOptions
-            {
-                Quantity = booking.NumberOfTickets,
-                PriceData = new Stripe.Checkout.SessionLineItemPriceDataOptions
-                {
-                    Currency = "usd",
-                    UnitAmount = (long)(booking.Concert.TicketPrice * 100),
-                    ProductData = new Stripe.Checkout.SessionLineItemPriceDataProductDataOptions
-                    {
-                        Name = booking.Concert.ConcertName
-                    }
-                }
-            }
-        },
-                Mode = "payment",
-                SuccessUrl = domain + $"Customer/Booking/PaymentSuccess?id={booking.Id}",
-                CancelUrl = domain + $"Customer/Booking/BookingDetails?id={booking.Id}"
-            };
-
-            var service = new Stripe.Checkout.SessionService();
-            var session = service.Create(options);
-
-            return Redirect(session.Url);
-        }
-
-        [HttpPost]
-        public IActionResult PayConfirm(int id)
-        {
-            var booking = _unitOfWork.Booking.Get(u => u.Id == id);
-
-            if (booking == null)
-                return NotFound();
-
-            booking.IsPaid = true;
-
-            _unitOfWork.Save();
-
-            return RedirectToAction("PaymentSuccess", new { id });
-        }
-
-        public IActionResult PaymentSuccess(int id)
-        {
-            var booking = _unitOfWork.Booking.Get(
-                u => u.Id == id,
-                includeProperties: "Concert"
-            );
-
-            string qrText =
-                $"Booking ID: {booking.Id}\n" +
-                $"Customer: {booking.CustomerName}\n" +
-                $"Concert: {booking.Concert?.ConcertName}\n" +
-                $"Location: {booking.Concert?.ConcertLocation}\n" +
-                $"Date: {booking.Concert?.DisplayDate}\n" +
-                $"Time: {booking.Concert?.DisplayTime}\n" +
-                $"Tickets: {booking.NumberOfTickets}\n" +
-                $"Total: ${booking.TotalPrice}\n" +
-                $"Payment: PAID";
-
-            booking.QrCodeUrl = GenerateQrCode(qrText);
-
-            if (booking == null)
-            {
-                return NotFound();
-            }
-
-            // Prevent duplicate payment records
-            if (!booking.IsPaid)
-            {
-                // Update booking
-                booking.IsPaid = true;
-                booking.PaymentStatus = "Paid";
-
-                _unitOfWork.Booking.Update(booking);
-
-                // Create payment record
-                Payment payment = new Payment()
-                {
-                    BookingId = booking.Id,
-                    Amount = booking.TotalPrice,
-                    Currency = "USD",
-                    PaymentStatus = "Paid",
-                    PaymentDate = DateTime.Now,
-                    PaymentIntentId = Guid.NewGuid().ToString()
-                };
-
-                _unitOfWork.Payment.Add(payment);
-
-                _unitOfWork.Save();
-            }
-
-            return View(booking);
-        }
-
-        public IActionResult MarkAsVenuePayment(int id)
-        {
-            var booking = _unitOfWork.Booking.Get(u => u.Id == id);
-
-            if (booking == null)
-                return NotFound();
-
-            booking.PaymentMethod = "Venue";
-            booking.PaymentStatus = "Pay at Venue";
-
-            _unitOfWork.Booking.Update(booking);
-            _unitOfWork.Save();
-
-            return RedirectToAction("BookingDetails", new { id });
         }
     }
 }
