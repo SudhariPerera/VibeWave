@@ -178,7 +178,7 @@ namespace VibeWave.Areas.Customer.Controllers
                 _unitOfWork.Save();
             }
 
-            return RedirectToAction("BookingDetails", new { id });
+            return View("PaymentSuccess", booking);
         }
 
         // =========================
@@ -194,6 +194,13 @@ namespace VibeWave.Areas.Customer.Controllers
             booking.PaymentStatus = PaymentStatuses.PayAtVenue;
             booking.PaymentMethod = PaymentMethods.Venue;
             booking.IsPaid = false;
+
+            booking.QrCodeUrl = GenerateQrCode(
+                $"Booking ID: {booking.Id}\n" +
+                $"Customer: {booking.CustomerName}\n" +
+                $"Concert: {booking.Concert?.ConcertName}\n" +
+                $"Payment: PAY AT VENUE"
+                );
 
             _unitOfWork.Booking.Update(booking);
             _unitOfWork.Save();
