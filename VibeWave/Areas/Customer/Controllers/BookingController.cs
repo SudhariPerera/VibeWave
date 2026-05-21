@@ -263,7 +263,7 @@ namespace VibeWave.Areas.Customer.Controllers
             _unitOfWork.Booking.Remove(booking);
             _unitOfWork.Save();
 
-            TempData["success"] = "Booking deleted successfully";
+            TempData["success"] = "Booking Deleted Successfully";
             return RedirectToAction(nameof(Index));
         }
     }
