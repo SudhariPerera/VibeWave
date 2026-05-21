@@ -22,8 +22,8 @@ namespace VibeWave.Data
                 new Concert
                 {
                     Id = 1,
-                    ConcertName = "Come Together - Born to Run - Bruce Springsteen",
-                    ActorName = "ABC",
+                    ConcertName = "Come Together - Born to Run",
+                    ActorName = "Bruce Springsteen",
                     ConcertLocation = "A",
                     DisplayDate = new DateOnly(2026, 05, 01),
                     DisplayTime = new TimeOnly(00, 20),
@@ -34,8 +34,8 @@ namespace VibeWave.Data
                 new Concert
                 {
                     Id = 2,
-                    ConcertName = "Kyla Cobbler - Not My Lemons",
-                    ActorName = "ABC",
+                    ConcertName = "Not My Lemons",
+                    ActorName = "Kyla Cobbler",
                     ConcertLocation = "A",
                     DisplayDate = new DateOnly(2026, 05, 01),
                     DisplayTime = new TimeOnly(00, 20),
