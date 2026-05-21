@@ -23,9 +23,6 @@ namespace VibeWave.Areas.Customer.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        // =========================
-        // INDEX
-        // =========================
         public IActionResult Index()
         {
             var bookings = _unitOfWork.Booking
@@ -35,9 +32,7 @@ namespace VibeWave.Areas.Customer.Controllers
             return View(bookings);
         }
 
-        // =========================
-        // CREATE (GET)
-        // =========================
+        // GET Method
         public IActionResult Create(int id)
         {
             var concert = _unitOfWork.Concert.Get(
@@ -51,9 +46,7 @@ namespace VibeWave.Areas.Customer.Controllers
             return View(concert);
         }
 
-        // =========================
-        // CREATE (POST)
-        // =========================
+        // CREATE (POST) Method
         [HttpPost]
         public IActionResult Create(int ConcertId, string CustomerName, string Email, int NumberOfTickets)
         {
@@ -72,7 +65,7 @@ namespace VibeWave.Areas.Customer.Controllers
                 BookingDate = DateTime.Now,
                 IsPaid = false,
                 PaymentStatus = PaymentStatuses.Pending,
-                PaymentMethod = PaymentMethods.Card // or "Not Selected" if you prefer
+                PaymentMethod = PaymentMethods.Card
             };
 
             _unitOfWork.Booking.Add(booking);
@@ -86,9 +79,7 @@ namespace VibeWave.Areas.Customer.Controllers
             return RedirectToAction(nameof(BookingDetails), new { id = booking.Id });
         }
 
-        // =========================
         // BOOKING DETAILS
-        // =========================
         public IActionResult BookingDetails(int id)
         {
             var booking = _unitOfWork.Booking.Get(
@@ -102,9 +93,8 @@ namespace VibeWave.Areas.Customer.Controllers
             return View(booking);
         }
 
-        // =========================
+
         // STRIPE PAYMENT
-        // =========================
         public IActionResult Pay(int id)
         {
             var booking = _unitOfWork.Booking.Get(
@@ -179,9 +169,7 @@ namespace VibeWave.Areas.Customer.Controllers
             return View("PaymentSuccess", booking);
         }
 
-        // =========================
         // PAY AT VENUE
-        // =========================
         public IActionResult PayAtVenue(int id)
         {
             var booking = _unitOfWork.Booking.Get(u => u.Id == id, includeProperties: "Concert");
@@ -206,9 +194,7 @@ namespace VibeWave.Areas.Customer.Controllers
             return RedirectToAction(nameof(BookingDetails), new { id });
         }
 
-        // =========================
         // QR GENERATOR (REUSABLE)
-        // =========================
         private void GenerateQrForBooking(Booking booking, Concert concert, string paymentStatus)
         {
             string qrText =
@@ -224,9 +210,7 @@ namespace VibeWave.Areas.Customer.Controllers
             booking.QrCodeUrl = GenerateQrCode(qrText);
         }
 
-        // =========================
         // QR CODE GENERATION
-        // =========================
         private string GenerateQrCode(string text)
         {
             using (QRCodeGenerator generator = new QRCodeGenerator())
@@ -243,9 +227,7 @@ namespace VibeWave.Areas.Customer.Controllers
             }
         }
 
-        // =========================
         // DOWNLOAD QR
-        // =========================
         public IActionResult DownloadQr(int id)
         {
             var booking = _unitOfWork.Booking.Get(u => u.Id == id);
@@ -259,9 +241,7 @@ namespace VibeWave.Areas.Customer.Controllers
             return File(bytes, "image/png", $"ticket-{id}.png");
         }
 
-        // =========================
-        // DELETE
-        // =========================
+        // DELETE Method
         public IActionResult Delete(int id)
         {
             var booking = _unitOfWork.Booking.Get(u => u.Id == id);
