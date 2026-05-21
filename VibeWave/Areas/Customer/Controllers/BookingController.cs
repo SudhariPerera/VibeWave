@@ -9,6 +9,7 @@ using System.Linq;
 using VibeWave.DataAccess.Repository.IRepository;
 using VibeWave.Models;
 using Stripe.Checkout;
+using VibeWave.Models.Constants;
 
 namespace VibeWave.Areas.Customer.Controllers
 {
@@ -70,8 +71,8 @@ namespace VibeWave.Areas.Customer.Controllers
                 TotalPrice = concert.TicketPrice * NumberOfTickets,
                 BookingDate = DateTime.Now,
                 IsPaid = false,
-                PaymentStatus = "Pending",
-                PaymentMethod = "Not Selected"
+                PaymentStatus = PaymentStatuses.Pending,
+                PaymentMethod = PaymentMethods.Card // or "Not Selected" if you prefer
             };
 
             _unitOfWork.Booking.Add(booking);
@@ -152,13 +153,15 @@ namespace VibeWave.Areas.Customer.Controllers
         public IActionResult PaymentSuccess(int id)
         {
             var booking = _unitOfWork.Booking.Get(u => u.Id == id, includeProperties: "Concert");
-            if (booking == null) return NotFound();
+
+            if (booking == null)
+                return NotFound();
 
             if (!booking.IsPaid)
             {
                 booking.IsPaid = true;
-                booking.PaymentStatus = "Paid";
-                booking.PaymentMethod = "Online";
+                booking.PaymentStatus = PaymentStatuses.Paid;
+                booking.PaymentMethod = PaymentMethods.Card;
 
                 var payment = new Payment
                 {
@@ -171,27 +174,11 @@ namespace VibeWave.Areas.Customer.Controllers
                 };
 
                 _unitOfWork.Payment.Add(payment);
+                _unitOfWork.Booking.Update(booking);
+                _unitOfWork.Save();
             }
 
-            // regenerate QR based on the current booking instance
-            string qrText =
-                $"Booking ID: {booking.Id}\n" +
-                $"Customer: {booking.CustomerName}\n" +
-                $"Concert: {booking.Concert?.ConcertName}\n" +
-                $"Location: {booking.Concert?.ConcertLocation}\n" +
-                $"Date: {booking.Concert?.DisplayDate}\n" +
-                $"Time: {booking.Concert?.DisplayTime}\n" +
-                $"Tickets: {booking.NumberOfTickets}\n" +
-                $"Total: ${booking.TotalPrice}\n" +
-                $"Payment: PAID";
-
-            booking.QrCodeUrl = GenerateQrCode(qrText);
-
-            // only one Update and Save
-            _unitOfWork.Booking.Update(booking);
-            _unitOfWork.Save();
-
-            return View(booking);
+            return RedirectToAction("BookingDetails", new { id });
         }
 
         // =========================
@@ -199,19 +186,14 @@ namespace VibeWave.Areas.Customer.Controllers
         // =========================
         public IActionResult PayAtVenue(int id)
         {
-            var booking = _unitOfWork.Booking.Get(
-                u => u.Id == id,
-                includeProperties: "Concert"
-            );
+            var booking = _unitOfWork.Booking.Get(u => u.Id == id, includeProperties: "Concert");
 
             if (booking == null)
                 return NotFound();
 
+            booking.PaymentStatus = PaymentStatuses.PayAtVenue;
+            booking.PaymentMethod = PaymentMethods.Venue;
             booking.IsPaid = false;
-            booking.PaymentStatus = "Pay at Venue";
-            booking.PaymentMethod = "Venue";
-
-            GenerateQrForBooking(booking, booking.Concert, "PAY AT VENUE");
 
             _unitOfWork.Booking.Update(booking);
             _unitOfWork.Save();
@@ -227,13 +209,12 @@ namespace VibeWave.Areas.Customer.Controllers
             string qrText =
                 $"Booking ID: {booking.Id}\n" +
                 $"Customer: {booking.CustomerName}\n" +
-                $"Concert: {concert.ConcertName}\n" +
-                $"Location: {concert.ConcertLocation}\n" +
-                $"Date: {concert.DisplayDate}\n" +
-                $"Time: {concert.DisplayTime}\n" +
+                $"Concert: {booking.Concert?.ConcertName}\n" +
+                $"Location: {booking.Concert?.ConcertLocation}\n" +
                 $"Tickets: {booking.NumberOfTickets}\n" +
                 $"Total: ${booking.TotalPrice}\n" +
-                $"Payment: {paymentStatus}";
+                $"Payment Status: {booking.PaymentStatus}\n" +
+                $"Payment Method: {booking.PaymentMethod}";
 
             booking.QrCodeUrl = GenerateQrCode(qrText);
         }

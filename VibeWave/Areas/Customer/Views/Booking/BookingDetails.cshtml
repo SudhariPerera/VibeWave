@@ -1,4 +1,5 @@
-﻿@model VibeWave.Models.Booking
+﻿@using VibeWave.Models.Constants
+@model VibeWave.Models.Booking
 
 <div class="container mt-4">
     <div class="row">
@@ -41,28 +42,23 @@
 
                     <form method="post" action=" ">
 
-                            @if (!Model.IsPaid)
+                            @if (Model.PaymentStatus == PaymentStatuses.Pending)
                             {
-                                <a asp-action="Pay"
-                                   asp-route-id="@Model.Id"
-                                   class="btn btn-success">
+                                <a asp-action="Pay" asp-route-id="@Model.Id" class="btn btn-success">
                                     Pay Now
                                 </a>
-                            }
-                            else
-                            {
-                                <button class="btn btn-secondary" disabled>
-                                    Already Paid
-                                </button>
-                            }
 
-                            @if (!Model.IsPaid)
-                            {
-                                <a asp-action="PayAtVenue"
-                                   asp-route-id="@Model.Id"
-                                   class="btn btn-warning">
+                                <a asp-action="PayAtVenue" asp-route-id="@Model.Id" class="btn btn-warning">
                                     Pay at Venue
                                 </a>
+                            }
+                            else if (Model.PaymentStatus == PaymentStatuses.Paid)
+                            {
+                                <button class="btn btn-secondary" disabled>Paid</button>
+                            }
+                            else if (Model.PaymentStatus == PaymentStatuses.PayAtVenue)
+                            {
+                                <span class="badge bg-warning">Pay at Venue</span>
                             }
 
                         <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">

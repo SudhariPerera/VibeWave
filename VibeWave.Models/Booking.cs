@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VibeWave.Models.Constants;
 
 namespace VibeWave.Models
 {
@@ -42,8 +43,7 @@ namespace VibeWave.Models
 
         public bool IsPaid { get; set; } = false;
 
-        public string PaymentStatus { get; set; } = "Pending";
-
-        public string PaymentMethod { get; set; } = "Online";
+        public string PaymentStatus { get; set; }
+        public string PaymentMethod { get; set; }
     }
 }
