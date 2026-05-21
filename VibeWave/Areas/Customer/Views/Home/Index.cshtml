@@ -1,5 +1,4 @@
-﻿@using VibeWave.Models
-@model VibeWave.Models.HomeIndexViewModel
+﻿@model VibeWave.Models.HomeIndexViewModel
 
 @{
     ViewData["Title"] = "Home Page";
@@ -7,65 +6,105 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome to VibeWave</h1>
-    @* <h3>Upcoming Concerts</h3> *@
 </div>
 
 <div class="container mt-4">
-    <form method="get" asp-action="index" class="row mb-4 g-2 align-items-end">
+
+    <form method="get" asp-action="Index" class="row mb-4 g-2 align-items-end">
+
+        <!-- SEARCH -->
         <div class="col-md-5">
             <label asp-for="SearchString" class="form-label">Search</label>
-            <input asp-for="SearchString" type="text" class="form-control" placeholder="concert name or actor..." /></input>
+            <input asp-for="SearchString"
+                   class="form-control"
+                   placeholder="concert name or actor..." />
         </div>
+
+        <!-- CATEGORY -->
         <div class="col-md-4">
             <label asp-for="CategoryId" class="form-label">Category</label>
-            <select asp-for="CategoryId" class="form-select"asp-items="ViewBag.CategoryList">
+
+            <select asp-for="CategoryId"
+                    class="form-select"
+                    asp-items="Model.CategoryList">
                 <option value="">--All Categories--</option>
             </select>
         </div>
+
+        <!-- BUTTONS -->
         <div class="col-md-3">
             <button type="submit" class="btn btn-primary w-100">
-                @* Bootstrap Icons *@
-                <span class="bi bi-search"></span>Apply
+                Search
             </button>
-            @* not null or choose one which is expect all category *@
-            @if(!string.IsNullOrEmpty(Model.SearchString)||(Model.CategoryId.HasValue && Model.CategoryId>0))
+
+            @if (!string.IsNullOrEmpty(Model.SearchString) ||
+                        (Model.CategoryId.HasValue && Model.CategoryId > 0))
             {
-                <a asp-action="Index"class="btn btn-secondary w-100 mt-2">Clear All</a>
+                <a asp-action="Index" class="btn btn-secondary w-100 mt-2">
+                    Clear All
+                </a>
             }
         </div>
     </form>
-    @if (!string.IsNullOrEmpty(Model.SearchString) || (Model.CategoryId.HasValue && Model.CategoryId > 0))
+
+    <!-- RESULTS COUNT -->
+    @if (!string.IsNullOrEmpty(Model.SearchString) ||
+        (Model.CategoryId.HasValue && Model.CategoryId > 0))
     {
-        @* show how many results are found *@
-        <p class="text-muted">Found @(Model.Concerts?.Count ?? 0) result(s)</p>
+        <p class="text-muted">
+            Found @(Model.Concerts?.Count() ?? 0) result(s)
+        </p>
     }
+
+    <!-- CONCERT LIST -->
     @if (Model.Concerts != null && Model.Concerts.Any())
     {
         <div class="row">
-            @foreach (var concert in Model.Concerts.OrderBy(c => c.DisplayDate))
+            @foreach (var concert in Model.Concerts)
             {
                 <div class="col-md-4 mb-3">
-                    <div class="card" style="height: 300px;">
-                        <div class="card-body" style="display: flex; flex-direction: column;">
+                    <div class="card h-100 shadow-sm">
+                        <img src="@(!string.IsNullOrEmpty(concert.ConcertImageUrl)
+                                                              ? concert.ConcertImageUrl
+                                 : "/images/concert/Concert.png")"
+                     class="card-img-top"
+                     style="height: 180px; object-fit: cover;" />
+                       <div class="card-body d-flex flex-column">
+
                             <h5 class="card-title">@concert.ConcertName</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">ActorName - @concert.ActorName</h6>
+
+                            <h6 class="text-muted">@concert.ActorName</h6>
+
                             <p class="card-text">
-                                @* <strong>Category:</strong> @concert.ConcertCategory<br /> *@
-                                <strong>Date:</strong> @concert.DisplayDate<br />
+                                <strong>Date:</strong> @concert.DisplayDate <br />
                                 <strong>Time:</strong> @concert.DisplayTime
                             </p>
-                            <button type="button" 
-                                class="btn btn-primary" 
-                                onclick="openModal('@concert.ConcertName', 
-                                                   '@concert.ActorName', 
-                                                   '@concert.Category', 
-                                                   '@concert.ConcertLocation', 
-                                                   '@concert.DisplayDate', 
-                                                   '@concert.DisplayTime',
-                                                   ' NZ$ @concert.TicketPrice.00')">
-                                Details
-                            </button>
-                            <a asp-controller="Booking" asp-action="Create" asp-route-id="@concert.Id" class="btn btn-success">Book</a>
+
+                            <!-- PUSH BUTTONS TO BOTTOM -->
+                            <div class="mt-auto">
+
+                                <button type="button"
+                                        class="btn btn-primary w-100"
+                                        onclick="openModal(
+                            '@concert.ConcertName',
+                            '@concert.ActorName',
+                            '@concert.Category?.Name',
+                            '@concert.ConcertLocation',
+                            '@concert.DisplayDate',
+                            '@concert.DisplayTime',
+                            '@($"NZ$ {concert.TicketPrice:0.00}")'
+                        )">
+                                    Details
+                                </button>
+
+                                <a asp-controller="Booking"
+                                   asp-action="Create"
+                                   asp-route-id="@concert.Id"
+                                   class="btn btn-success w-100 mt-2">
+                                    Book
+                                </a>
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -78,6 +117,7 @@
     }
 </div>
 
+<!-- MODAL -->
 <div id="concertModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -86,7 +126,6 @@
 </div>
 
 <style>
-
     .modal {
         display: none;
         position: fixed;
@@ -100,60 +139,25 @@
     }
 
     .modal-content {
-        background: #bfddf2;
-        background: radial-gradient(circle,rgba(191, 221, 242, 1) 0%, rgba(204, 210, 249, 1) 25%, rgba(215, 201, 255, 1) 45%, rgba(232, 213, 252, 1) 71%, rgba(252, 227, 248, 1) 100%);
+        background: radial-gradient(circle, rgba(191, 221, 242, 1) 0%, rgba(204, 210, 249, 1) 25%, rgba(215, 201, 255, 1) 45%, rgba(232, 213, 252, 1) 71%, rgba(252, 227, 248, 1) 100%);
         margin: auto;
         padding: 20px;
         width: 80%;
         max-width: 500px;
         border-radius: 5px;
-        align-content:center;
         text-align: center;
     }
-
-    .close {
-        color: #800080;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-        text-align: right;
-    }
-
-        .close:hover {
-            color: black;
-        }
-
-    @@media (max-width: 768px) {
-        .float-right-sm
-
-    {
-        float: right;
-    }
-
-    }
-
-    /* Float to the right on screens that are equal to or greater than 769px wide */
-    @@media (min-width: 769px) {
-        .float-right-lg
-
-    {
-        float: right;
-    }
-
-    }
-
 </style>
 
 <script>
     var modal = document.getElementById("concertModal");
     var span = document.getElementsByClassName("close")[0];
 
-    span.onclick = function() {
+    span.onclick = function () {
         modal.style.display = "none";
     }
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
         }
@@ -162,15 +166,13 @@
     function openModal(name, actor, category, location, date, time, price) {
         document.getElementById("modalContent").innerHTML = `
             <h2>${name}</h2>
-            <P> _______________________ </P>
-            <h5><strong>Actor:</strong> ${actor}</h5>
-            <P> _______________________ </P>
+            <hr/>
+            <p><strong>Actor:</strong> ${actor}</p>
             <p><strong>Category:</strong> ${category}</p>
             <p><strong>Location:</strong> ${location}</p>
             <p><strong>Date:</strong> ${date}</p>
             <p><strong>Time:</strong> ${time}</p>
-            <p><strong>Price:${price}</strong> </p>
-            <hr />
+            <p><strong>Price:</strong> ${price}</p>
             <button onclick="closeModal()" class="btn btn-secondary">Close</button>
         `;
         modal.style.display = "block";
