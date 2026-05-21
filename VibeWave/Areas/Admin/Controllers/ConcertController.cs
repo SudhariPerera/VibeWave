@@ -45,13 +45,13 @@ namespace VibeWave.Areas.Admin.Controllers
             }
             else
             {
-                concertVM.Concert = _unitOfWork.Concert.Get(u => u.CategoryId == id);
+                concertVM.Concert = _unitOfWork.Concert.Get(u => u.Id == id);
                 return View(concertVM);
             }
         }
 
         [HttpPost]
-        public IActionResult Create(ConcertVM concertVM, IFormFile? file)
+        public IActionResult Upsert(ConcertVM concertVM, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -76,7 +76,7 @@ namespace VibeWave.Areas.Admin.Controllers
                     {
                         file.CopyTo(fileStream);
                     }
-                    concertVM.Concert.ConcertImageUrl = @"\images\product\" + fileName;
+                    concertVM.Concert.ConcertImageUrl = @"\images\concert\" + fileName;
                 }
                 if (concertVM.Concert.Id == 0)
                 {
@@ -87,7 +87,7 @@ namespace VibeWave.Areas.Admin.Controllers
                     _unitOfWork.Concert.Update(concertVM.Concert);
                 }
                 _unitOfWork.Save();
-                TempData["success"] = "Product Created successfully";
+                TempData["success"] = "Concert Created successfully";
                 return RedirectToAction("Index");
             }
             else
@@ -101,9 +101,16 @@ namespace VibeWave.Areas.Admin.Controllers
             }
         }
 
+        #region API calls
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            List<Concert> objConcertList = _unitOfWork.Concert.GetAll(includeProperties: "Category").ToList();
+            return Json(new { data = objConcertList });
+        }
 
-        ////EDIT BUTTON
-        //public IActionResult Edit(int id)
+        ////Delete Button
+        //public IActionResult Delete(int? id)
         //{
         //    if (id == null || id == 0)
         //    {
@@ -114,68 +121,46 @@ namespace VibeWave.Areas.Admin.Controllers
         //    {
         //        return NotFound();
         //    }
-
-        //    IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
-        //    {
-        //        Text = u.Name,
-        //        Value = u.CategoryId.ToString(),
-                
-        //    });
-        //    ViewBag.CategoryList = CategoryList;
-
         //    return View(concertFromDb);
         //}
 
-        //[HttpPost]
-        //public IActionResult Edit(Concert obj)
+        //[HttpPost, ActionName("Delete")]
+        //public IActionResult DeletePOST(int? id)
         //{
-        //    ModelState.Remove("Category");
-
-        //    if (ModelState.IsValid)
+        //    Concert? obj = _unitOfWork.Concert.Get(u => u.Id == id);
+        //    if (obj == null) 
         //    {
-        //        _unitOfWork.Concert.Update(obj);
-        //        _unitOfWork.Save();
-        //        TempData["success"] = " Concert Details Updated Successfully";
-        //        return RedirectToAction("Index");
+        //        return NotFound();
         //    }
-        //    IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
-        //    {
-        //        Text = u.Name,
-        //        Value = u.CategoryId.ToString(),
-        //    });
-        //    ViewBag.CategoryList = CategoryList;
-
-        //    return View();
+        //    _unitOfWork.Concert.Remove(obj);
+        //    _unitOfWork.Save();
+        //    TempData["success"] = " Concert Details Deleted Successfully";
+        //    return RedirectToAction("Index");
         //}
 
-
-        //Delete Button
+        [HttpDelete]
         public IActionResult Delete(int? id)
         {
-            if (id == null || id == 0)
+            var concertToBeDeleted = _unitOfWork.Concert.Get(u => u.Id == id);
+            if (concertToBeDeleted == null)
             {
-                return NotFound();
+                return Json(new { success = false, Message = "Error while deleting" });
             }
-            Concert? concertFromDb = _unitOfWork.Concert.Get(u => u.Id == id);
-            if (concertFromDb == null)
-            {
-                return NotFound();
-            }
-            return View(concertFromDb);
-        }
 
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePOST(int? id)
-        {
-            Concert? obj = _unitOfWork.Concert.Get(u => u.Id == id);
-            if (obj == null) 
+            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, concertToBeDeleted.ConcertImageUrl.TrimStart('\\'));
+
+            if (System.IO.File.Exists(oldImagePath))
             {
-                return NotFound();
+                System.IO.File.Delete(oldImagePath);
             }
-            _unitOfWork.Concert.Remove(obj);
+
+            _unitOfWork.Concert.Remove(concertToBeDeleted);
+
             _unitOfWork.Save();
-            TempData["success"] = " Concert Details Deleted Successfully";
-            return RedirectToAction("Index");
+
+            return Json(new { success = true, Message = "Delete Successful" });
+
         }
+        #endregion
     }
 }

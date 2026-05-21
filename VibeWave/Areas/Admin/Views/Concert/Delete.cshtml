@@ -1,4 +1,4 @@
-﻿@using VibeWave.Models
+﻿@* @using VibeWave.Models
 @model Concert
 <div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
@@ -13,7 +13,7 @@
             <input asp-for="Id" hidden />
             <div class="border p-3 mt-4">
                 @*<div asp-validation-summary="All"></div>*@
-                <div class="py-2 col-12">
+@*  <div class="py-2 col-12">
                     <label asp-for="ConcertName" class="ms-2"> </label>
                     <input asp-for="ConcertName" disabled class="form-control" />
                 </div>
@@ -25,7 +25,7 @@
                     <label asp-for="ConcertCategory" class="ms-2"> </label>
                     <input asp-for="ConcertCategory" disabled class="form-control" />
                 </div> *@
-                <div class="py-2 col-12">
+@*           <div class="py-2 col-12">
                     <label asp-for="ConcertLocation" class="ms-2"> </label>
                     <input asp-for="ConcertLocation" disabled class="form-control" />
                 </div>
@@ -67,9 +67,9 @@
             </div>
         </div>
     </div>
-</div>
+</div> *@
 
-<style>
+@* <style>
     /* Modal Styles */
     .modal {
         display: none;
@@ -154,9 +154,9 @@
     }
 
     }
-</style>
+</style> *@
 
-<script>
+@* <script>
     var modal = document.getElementById("confirmModal");
     var span = document.getElementsByClassName("close")[0];
 
@@ -181,10 +181,10 @@
             closeModal();
         }
     }
-</script>
+</script> *@
 
-@section Scripts {
+@* @section Scripts {
     @{
         <partial name="_ValidationScriptsPartial" />
     }
-}
+} *@
