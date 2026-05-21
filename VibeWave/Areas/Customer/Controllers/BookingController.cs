@@ -246,13 +246,34 @@ namespace VibeWave.Areas.Customer.Controllers
 
         public IActionResult PaymentSuccess(int id)
         {
-            var booking = _unitOfWork.Booking.Get(u => u.Id == id);
+            var booking = _unitOfWork.Booking.Get(
+                u => u.Id == id,
+                includeProperties: "Concert"
+            );
 
             if (booking == null)
                 return NotFound();
 
-            booking.IsPaid = true;
-            _unitOfWork.Save();
+            // Prevent duplicate payments
+            if (!booking.IsPaid)
+            {
+                booking.IsPaid = true;
+                booking.PaymentStatus = "Paid";
+
+                var payment = new Payment
+                {
+                    BookingId = booking.Id,
+                    Amount = booking.TotalPrice,
+                    Currency = "NZD",
+                    PaymentStatus = "Paid",
+                    PaymentDate = DateTime.Now,
+                    PaymentIntentId = Guid.NewGuid().ToString() 
+                };
+
+                _unitOfWork.Payment.Add(payment);
+
+                _unitOfWork.Save();
+            }
 
             return View(booking);
         }

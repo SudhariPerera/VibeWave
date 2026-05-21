@@ -14,10 +14,16 @@ namespace VibeWave.Data
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<ContactMessage> ContactMessages { get; set; }
+        public DbSet<Payment> Payments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);//AI1. 必须首先调用基类方法，让 Identity 完成自己的配置（如主键等）[reference:2]
+
+            modelBuilder.Entity<Payment>()
+        .Property(p => p.Amount)
+        .HasPrecision(18, 2);
+
             modelBuilder.Entity<Concert>().HasData(
                 new Concert
                 {

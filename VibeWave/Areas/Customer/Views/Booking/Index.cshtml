@@ -13,6 +13,7 @@
             <th>Date</th>
             <th>Total Price</th>
             <th>QR Code</th>
+            <th>Status</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -30,6 +31,16 @@
                     @if (!string.IsNullOrEmpty(booking.QrCodeUrl))
                     {
                         <img src="@booking.QrCodeUrl" style="width:80px;height:80px;" />
+                    }
+                </td>
+                <td>
+                    @if (booking.IsPaid)
+                    {
+                        <span class="badge bg-success">Paid</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">Pending</span>
                     }
                 </td>
                 <td>

@@ -13,6 +13,8 @@ namespace VibeWave.DataAccess.Repository.IRepository
         IBookingRepository Booking { get; }
         ICategoryRepository Category { get; }
         IContactMessageRepository ContactMessage { get; }
+        IPaymentRepository Payment { get; }
+
         void Save();
     }
 }
