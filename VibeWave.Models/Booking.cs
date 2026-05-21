@@ -41,5 +41,7 @@ namespace VibeWave.Models
         public string? QrCodeUrl { get; set; }
 
         public bool IsPaid { get; set; } = false;
+
+        public string PaymentStatus { get; set; } = "Pending";
     }
 }

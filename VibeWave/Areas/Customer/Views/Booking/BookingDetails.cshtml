@@ -18,11 +18,11 @@
                     <p><strong>Status:</strong>
                             @if (Model.IsPaid)
                             {
-                                <span class="text-success">Paid</span>
+                                <span class="badge bg-success">Paid</span>
                             }
                             else
                             {
-                                <span class="text-danger">Not Paid</span>
+                                <span class="badge bg-warning text-dark">Pending</span>
                             }
                     </p>
                     <div class="w3-container">
@@ -41,8 +41,29 @@
 
                     <form method="post" action=" ">
 
-                        <a asp-controller="Booking" asp-action="Pay" asp-route-id="@Model.Id" class="btn btn-success"> Pay Now
-                         </a>
+                            @if (!Model.IsPaid)
+                            {
+                                <a asp-action="Pay"
+                                   asp-route-id="@Model.Id"
+                                   class="btn btn-success">
+                                    Pay Now
+                                </a>
+                            }
+                            else
+                            {
+                                <button class="btn btn-secondary" disabled>
+                                    Already Paid
+                                </button>
+                            }
+
+                            @if (Model.IsPaid)
+                            {
+                                <a asp-action="BookingDetails"
+                                   asp-route-id="@Model.Id"
+                                   class="btn btn-primary">
+                                    View Ticket
+                                </a>
+                            }
                         <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
                             <i class="bi bi-house-door"></i> Back to Home
                         </a>
