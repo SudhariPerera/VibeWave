@@ -33,7 +33,8 @@ function loadDataTable() {
                 },
                 width: "20%"
             }
-        ]
+        ],
+        order: [[3, "desc"]]
     });
 }
 

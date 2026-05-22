@@ -24,13 +24,19 @@ namespace VibeWave.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            List<Concert> objConcertList = _unitOfWork.Concert.GetAll(includeProperties: "Category").ToList();
-            return View(objConcertList);
+            var concerts = _unitOfWork.Concert
+                            .GetAll(includeProperties: "Category")
+                            .OrderByDescending(c => c.DisplayDate) // newest first
+                            .ToList();
+
+            return View(concerts);
         }
 
         // GET: Create
         public IActionResult Upsert(int? id)
         {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
             ConcertVM concertVM = new()
             {
                 CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
@@ -39,24 +45,36 @@ namespace VibeWave.Areas.Admin.Controllers
                     Value = u.CategoryId.ToString()
                 }),
                 Concert = new Concert()
+                {
+                    DisplayDate = today,
+                    TicketPrice = 0m
+                }
             };
-            if (id == null || id == 0)
+
+            if (id != null && id != 0)
             {
-                return View(concertVM);
+                var concertFromDb = _unitOfWork.Concert.Get(u => u.Id == id);
+                if (concertFromDb != null)
+                    concertVM.Concert = concertFromDb;
             }
-            else
-            {
-                concertVM.Concert = _unitOfWork.Concert.Get(u => u.Id == id);
-                return View(concertVM);
-            }
+
+            return View(concertVM);
         }
 
         [HttpPost]
         public IActionResult Upsert(ConcertVM concertVM, IFormFile? file)
         {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            if (concertVM.Concert.DisplayDate < today)
+            {
+                ModelState.AddModelError("Concert.DisplayDate", "Concert date must be in the future.");
+            }
+
             if (ModelState.IsValid)
             {
                 string wwwRootPath = _webHostEnvironment.WebRootPath;
+
                 if (file != null)
                 {
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
@@ -64,42 +82,40 @@ namespace VibeWave.Areas.Admin.Controllers
 
                     if (!string.IsNullOrEmpty(concertVM.Concert.ConcertImageUrl))
                     {
-                        //delete the old image by getting the path of that image
-                        var oldImagePath = Path.Combine(wwwRootPath, concertVM.Concert.ConcertImageUrl.Trim('\\'));
-
+                        var oldImagePath = Path.Combine(wwwRootPath, concertVM.Concert.ConcertImageUrl.TrimStart('\\'));
                         if (System.IO.File.Exists(oldImagePath))
                         {
                             System.IO.File.Delete(oldImagePath);
                         }
-
                     }
+
                     using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
                     {
                         file.CopyTo(fileStream);
                     }
+
                     concertVM.Concert.ConcertImageUrl = @"\images\concert\" + fileName;
                 }
+
                 if (concertVM.Concert.Id == 0)
-                {
                     _unitOfWork.Concert.Add(concertVM.Concert);
-                }
                 else
-                {
                     _unitOfWork.Concert.Update(concertVM.Concert);
-                }
+
                 _unitOfWork.Save();
-                TempData["success"] = "Concert Created successfully";
+
+                TempData["success"] = concertVM.Concert.Id == 0 ? "Concert created successfully" : "Concert updated successfully";
                 return RedirectToAction("Index");
             }
-            else
+
+            // Re-populate CategoryList if validation fails
+            concertVM.CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
             {
-                concertVM.CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
-                {
-                    Text = u.Name,
-                    Value = u.CategoryId.ToString()
-                });
-                return View(concertVM);
-            }
+                Text = u.Name,
+                Value = u.CategoryId.ToString()
+            });
+
+            return View(concertVM);
         }
 
         //calender Method
@@ -107,6 +123,7 @@ namespace VibeWave.Areas.Admin.Controllers
         {
             int currentMonth = month ?? DateTime.Now.Month;
             int currentYear = year ?? DateTime.Now.Year;
+            var today = DateOnly.FromDateTime(DateTime.Now);
 
             var concerts = _unitOfWork.Concert.GetAll(includeProperties: "Category").ToList();
 
@@ -126,20 +143,22 @@ namespace VibeWave.Areas.Admin.Controllers
 
             // Filter by category
             if (categoryId.HasValue)
-            {
                 concerts = concerts.Where(c => c.CategoryId == categoryId.Value).ToList();
-            }
+
+            // Sort: future concerts first, past last
+            var futureConcerts = concerts.Where(c => c.DisplayDate >= today).OrderBy(c => c.DisplayDate).ToList();
+            var pastConcerts = concerts.Where(c => c.DisplayDate < today).OrderBy(c => c.DisplayDate).ToList();
+            concerts = futureConcerts.Concat(pastConcerts).ToList();
 
             var calendarVM = new CalendarVM
             {
                 SearchString = searchString,
                 CategoryId = categoryId,
-                CategoryList = _unitOfWork.Category.GetAll()
-                                  .Select(c => new SelectListItem
-                                  {
-                                      Text = c.Name,
-                                      Value = c.CategoryId.ToString()
-                                  }).ToList(),
+                CategoryList = _unitOfWork.Category.GetAll().Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.CategoryId.ToString()
+                }).ToList(),
                 Concerts = concerts
             };
 
@@ -166,8 +185,23 @@ namespace VibeWave.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            List<Concert> objConcertList = _unitOfWork.Concert.GetAll(includeProperties: "Category").ToList();
-            return Json(new { data = objConcertList });
+            var objConcertList = _unitOfWork.Concert
+            .GetAll(includeProperties: "Category")
+            .OrderByDescending(c => c.DisplayDate) // newest first
+            .Select(c => new
+            {
+                c.Id,
+                c.ConcertName,
+                c.ActorName,
+                c.ConcertLocation,
+                DisplayDate = c.DisplayDate.ToString("yyyy-MM-dd"), // convert to string
+                DisplayTime = c.DisplayTime.ToString(), // adjust if needed
+                c.TicketPrice,
+                Category = new { c.Category.Name }
+            })
+            .ToList();
+
+                return Json(new { data = objConcertList });       
         }
 
         //delete
