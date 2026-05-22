@@ -108,7 +108,6 @@ namespace VibeWave.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Re-populate CategoryList if validation fails
             concertVM.CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
             {
                 Text = u.Name,
@@ -127,12 +126,11 @@ namespace VibeWave.Areas.Admin.Controllers
 
             var concerts = _unitOfWork.Concert.GetAll(includeProperties: "Category").ToList();
 
-            // Filter by month/year
+
             concerts = concerts
                 .Where(c => c.DisplayDate.Month == currentMonth && c.DisplayDate.Year == currentYear)
                 .ToList();
 
-            // Filter by search string
             if (!string.IsNullOrEmpty(searchString))
             {
                 concerts = concerts
@@ -141,7 +139,7 @@ namespace VibeWave.Areas.Admin.Controllers
                     .ToList();
             }
 
-            // Filter by category
+
             if (categoryId.HasValue)
                 concerts = concerts.Where(c => c.CategoryId == categoryId.Value).ToList();
 
@@ -194,8 +192,8 @@ namespace VibeWave.Areas.Admin.Controllers
                 c.ConcertName,
                 c.ActorName,
                 c.ConcertLocation,
-                DisplayDate = c.DisplayDate.ToString("yyyy-MM-dd"), // convert to string
-                DisplayTime = c.DisplayTime.ToString(), // adjust if needed
+                DisplayDate = c.DisplayDate.ToString("yyyy-MM-dd"),
+                DisplayTime = c.DisplayTime.ToString(), 
                 c.TicketPrice,
                 Category = new { c.Category.Name }
             })
