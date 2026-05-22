@@ -86,21 +86,22 @@
                                 <button type="button"
                                         class="btn btn-primary w-100"
                                         onclick="openModal(
-                            '@concert.ConcertName',
-                            '@concert.ActorName',
-                            '@concert.Category?.Name',
-                            '@concert.ConcertLocation',
-                            '@concert.DisplayDate',
-                            '@concert.DisplayTime',
-                            '@($"NZ$ {concert.TicketPrice:0.00}")'
-                        )">
+                                            '@concert.ConcertName',
+                                            '@concert.ActorName',
+                                            '@concert.CategoryName',
+                                            '@concert.ConcertLocation',
+                                            '@concert.DisplayDate',
+                                            '@concert.DisplayTime',
+                                            '@($"NZ$ {concert.TicketPrice:0.00}")'
+                                        )">
                                     Details
                                 </button>
 
                                 <a asp-controller="Booking"
                                    asp-action="Create"
                                    asp-route-id="@concert.Id"
-                                   class="btn btn-success w-100 mt-2">
+                                   class="btn btn-success w-100 mt-2"
+                                   disabled="@(concert.IsBookable ? null : "disabled")">
                                     Book
                                 </a>
 
@@ -146,6 +147,11 @@
         max-width: 500px;
         border-radius: 5px;
         text-align: center;
+    }
+
+    a[disabled] {
+        pointer-events: none;
+        opacity: 0.6;
     }
 </style>
 

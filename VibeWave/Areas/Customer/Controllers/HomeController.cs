@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using VibeWave.DataAccess.Repository.IRepository;
 using VibeWave.Models;
 using System.Linq;
+using VibeWave.Models.ViewModels;
 
 namespace VibeWave.Areas.Customer.Controllers
 {
@@ -21,31 +22,46 @@ namespace VibeWave.Areas.Customer.Controllers
         public IActionResult Index(string searchString, int? categoryId)
         {
             var concerts = _unitOfWork.Concert
-                .GetAll(includeProperties: "Category")
-                .AsQueryable();
+           .GetAll(includeProperties: "Category")
+           .AsQueryable();
 
-            // 👇 PUT YOUR SEARCH CODE HERE
+            // search and filter
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 searchString = searchString.ToLower();
-
                 concerts = concerts.Where(c =>
                     c.ConcertName.ToLower().Contains(searchString) ||
                     (c.ActorName != null && c.ActorName.ToLower().Contains(searchString))
                 );
             }
 
-            // CATEGORY FILTER (below search)
             if (categoryId.HasValue && categoryId.Value > 0)
-            {
                 concerts = concerts.Where(c => c.CategoryId == categoryId.Value);
-            }
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            var concertList = concerts
+                .OrderBy(c => c.DisplayDate)
+                .Select(c => new HomeConcertVM
+                {
+                    Id = c.Id,
+                    ConcertName = c.ConcertName,
+                    ActorName = c.ActorName,
+                    ConcertLocation = c.ConcertLocation,
+                    DisplayDate = c.DisplayDate,                       // DateOnly ✅
+                    DisplayTime = c.DisplayTime.ToString("hh\\:mm tt"), // TimeOnly → string
+                    TicketPrice = c.TicketPrice,
+                    CategoryName = c.Category.Name,
+                    ConcertImageUrl = c.ConcertImageUrl,
+                    IsBookable = c.DisplayDate >= today               // compare DateOnly ✅
+                })
+                .ToList();
 
             var viewModel = new HomeIndexViewModel
             {
                 SearchString = searchString,
                 CategoryId = categoryId,
-                Concerts = concerts.OrderBy(c => c.DisplayDate).ToList(),
+                Concerts = concertList, // use mapped VM
                 CategoryList = _unitOfWork.Category.GetAll()
                     .Select(c => new SelectListItem
                     {
@@ -55,11 +71,6 @@ namespace VibeWave.Areas.Customer.Controllers
             };
 
             return View(viewModel);
-        }
-
-        public IActionResult Calender()
-        {
-            return View();
         }
 
         public IActionResult Error()
