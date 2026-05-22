@@ -48,12 +48,12 @@ namespace VibeWave.Areas.Customer.Controllers
                     ConcertName = c.ConcertName,
                     ActorName = c.ActorName,
                     ConcertLocation = c.ConcertLocation,
-                    DisplayDate = c.DisplayDate,                       // DateOnly ✅
-                    DisplayTime = c.DisplayTime.ToString("hh\\:mm tt"), // TimeOnly → string
+                    DisplayDate = c.DisplayDate,                      
+                    DisplayTime = c.DisplayTime.ToString("hh\\:mm tt"), 
                     TicketPrice = c.TicketPrice,
                     CategoryName = c.Category.Name,
                     ConcertImageUrl = c.ConcertImageUrl,
-                    IsBookable = c.DisplayDate >= today               // compare DateOnly ✅
+                    IsBookable = c.DisplayDate >= today             
                 })
                 .ToList();
 
@@ -61,7 +61,7 @@ namespace VibeWave.Areas.Customer.Controllers
             {
                 SearchString = searchString,
                 CategoryId = categoryId,
-                Concerts = concertList, // use mapped VM
+                Concerts = concertList, 
                 CategoryList = _unitOfWork.Category.GetAll()
                     .Select(c => new SelectListItem
                     {
