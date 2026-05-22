@@ -1,17 +1,54 @@
 ﻿@model Concert
 
-<h2>@Model.ConcertName</h2>
+<form method="post">
+    <div class="card shadow border-0 mt-4">
+        <div class="card-header bg-secondary bg-gradient text-light py-4">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h3 class="text-white text-uppercase">@Model.ConcertName</h3>
+                    <p class="text-white-50 fw-semibold mb-0"><strong>Artist:</strong>by @Model.ActorName</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="py-3">
+                <div class="row">
+                    <div class="col-6 col-md-2 offset-lg-1 pb-1">
+                        <a asp-action="Index" class="btn btn-outline-primary bg-gradient mb-5 fw-semibold btn-sm text-uppercase">
+                            <small>Back to home</small>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-lg-3 offset-lg-1 text-center mb-3">
+                        <img src="@Model.ConcertImageUrl" width="100%" class="rounded" />
+                    </div>
+                    <div class="col-12 col-lg-6 offset-lg-1">
 
-<img src="@Model.ConcertImageUrl" width="300" />
+                        <div class="col-12 col-md-6 pb-4">
+                            <span class="badge"><strong>Location:</strong>@Model.ConcertLocation</span>
+                        </div>
+                        <div class="row ps-2">
+                            <h6 class="text-dark text-opacity-50 "><strong>Category:</strong> @Model.Category.Name</h6>
+                        </div>
+                        <div class="row ps-2">
+                            <h6 class="text-dark text-opacity-50 ">Date : @Model.DisplayDate</h6>
+                        </div>
+                        <div class="row ps-2">
+                            <h6 class="text-dark text-opacity-50 ">Time : @Model.DisplayTime</h6>
+                        </div>
 
-<p><strong>Artist:</strong> @Model.ActorName</p>
+                        <div class="row pl-2 my-3">
+                            <p class="text-secondary lh-sm"><strong>Price:</strong> $@Model.TicketPrice</p>
+                        </div>
 
-<p><strong>Location:</strong> @Model.ConcertLocation</p>
+                    </div>
 
-<p><strong>Date:</strong> @Model.DisplayDate</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
-<p><strong>Time:</strong> @Model.DisplayTime</p>
 
-<p><strong>Price:</strong> $@Model.TicketPrice</p>
 
-<p><strong>Category:</strong> @Model.Category.Name</p>
