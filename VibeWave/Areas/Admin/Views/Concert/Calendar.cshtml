@@ -1,143 +1,201 @@
-﻿@model List<Concert>
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@model CalendarVM
 
 @{
     int month = ViewBag.Month;
     int year = ViewBag.Year;
+    string searchString = ViewBag.SearchString as string ?? "";
+    string categoryId = ViewBag.CategoryId as string ?? "";
 
     DateTime firstDay = new DateTime(year, month, 1);
-
     int daysInMonth = DateTime.DaysInMonth(year, month);
-
-    // Monday = first day
     int startDay = ((int)firstDay.DayOfWeek + 6) % 7;
 }
 
-<div class="calendar-header">
-
-    <a asp-action="Calendar"
-       asp-route-month="@(month == 1 ? 12 : month - 1)"
-       asp-route-year="@(month == 1 ? year - 1 : year)">
-        ◀ Previous
-    </a>
-
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <a asp-action="Calendar" asp-route-month="@(month == 1 ? 12 : month - 1)" asp-route-year="@(month == 1 ? year - 1 : year)">
+            ◀ Previous
+        </a>
+    </div>
     <h2>@firstDay.ToString("MMMM yyyy")</h2>
-
-    <a asp-action="Calendar"
-       asp-route-month="@(month == 12 ? 1 : month + 1)"
-       asp-route-year="@(month == 12 ? year + 1 : year)">
-        Next ▶
-    </a>
-
+    <div>
+        <a asp-action="Calendar" asp-route-month="@(month == 12 ? 1 : month + 1)" asp-route-year="@(month == 12 ? year + 1 : year)">
+            Next ▶
+        </a>
+    </div>
 </div>
 
-<table class="calendar-table">
-
-    <thead>
-        <tr>
-            <th>Mon</th>
-            <th>Tue</th>
-            <th>Wed</th>
-            <th>Thu</th>
-            <th>Fri</th>
-            <th>Sat</th>
-            <th>Sun</th>
-        </tr>
-    </thead>
-
-    <tbody>
-
-        <tr>
-
-            @for (int i = 0; i < startDay; i++)
+<form method="get" action="@Url.Action("Calendar")" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <input type="text" name="SearchString" value="@Model.SearchString" class="form-control" placeholder="Search by concert or actor" />
+    </div>
+    <div class="col-md-4">
+        <select name="CategoryId" class="form-select">
+            <option value="">-- All Categories --</option>
+            @foreach (var cat in Model.CategoryList)
             {
-                <td></td>
-            }
-
-            @for (int day = 1; day <= daysInMonth; day++)
-            {
-                var currentDate = new DateOnly(year, month, day);
-
-                var dayConcerts = Model
-                    .Where(c => c.DisplayDate == currentDate)
-                    .ToList();
-
-                <td class="calendar-day">
-
-                    <div class="day-number">@day</div>
-
-                    @foreach (var concert in dayConcerts)
-                        {
-                            <a asp-action="Details"
-                               asp-route-id="@concert.Id"
-                               class="concert-box d-block text-decoration-none">
-
-                                <strong>@concert.ConcertName</strong>
-
-                                <br />
-
-                                @concert.ActorName
-
-                                <br />
-
-                                @concert.DisplayTime
-
-                            </a>
-                        }
-
-                </td>
-
-                if ((day + startDay) % 7 == 0)
+                if (Model.CategoryId.HasValue && Model.CategoryId.Value.ToString() == cat.Value)
                 {
-                    @:</tr><tr>
+                    <option value="@cat.Value" selected>@cat.Text</option>
+                }
+                else
+                {
+                    <option value="@cat.Value">@cat.Text</option>
                 }
             }
+        </select>
+    </div>
+    <div class="col-md-4 d-flex">
+        <button type="submit" class="btn btn-primary me-2 w-50">Filter</button>
+        <button type="button" class="btn btn-secondary w-50" onclick="clearSearch()">Clear</button>
+    </div>
+</form>
 
+<!-- EXPORT -->
+<button onclick="exportCalendar()" class="btn btn-outline-primary mb-3">Export Calendar</button> 
+
+<!-- CALENDAR TABLE -->
+<table class="calendar-table">
+    <thead>
+        <tr>
+            <th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th>
         </tr>
+    </thead>
+    <tbody>
+        <tr>
+        @for (int i = 0; i < startDay; i++)
+        {
+            <td></td>
+        }
+        @for (int day = 1; day <= daysInMonth; day++)
+        {
+            var currentDate = new DateOnly(year, month, day);
+            var dayConcerts = Model.Concerts.Where(c => c.DisplayDate == currentDate).ToList();
+            <td class="calendar-day @(dayConcerts.Any() ? "has-concert" : "")">
+                <div class="day-number">@day</div>
 
+                @foreach (var concert in dayConcerts)
+                {
+                    var cssClass = "concert-box concert-" + (concert.Category?.Name.ToLower() ?? "pop");
+                    <button type="button" class="@cssClass"
+                            onclick="openConcertModal(
+                                '@concert.ConcertName',
+                                '@concert.ActorName',
+                                '@concert.Category?.Name',
+                                '@concert.ConcertLocation',
+                                '@concert.DisplayDate',
+                                '@concert.DisplayTime',
+                                '@($"${concert.TicketPrice:0.00}")',
+                                '@concert.Id'
+                            )">
+                        @concert.ConcertName - @concert.DisplayTime
+                    </button>
+                }
+            </td>
+
+            if ((day + startDay) % 7 == 0)
+            {
+                @:</tr><tr>
+            }
+        }
+        </tr>
     </tbody>
-
 </table>
 
-                            <style>
+<!-- MODAL -->
+<div id="concertModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="modalContent"></div>
+    </div>
+</div>
 
-.calendar-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
-}
+<style>
+/* Calendar */
+.calendar-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.calendar-table{ width:100%; border-collapse:collapse; }
+.calendar-table th{ background:#1abc9c; color:white; padding:10px; }
+.calendar-table td{ border:1px solid #ddd; width:14.2%; height:150px; vertical-align:top; padding:5px; overflow-y:auto; }
+.day-number{ font-weight:bold; margin-bottom:5px; }
 
-.calendar-table{
-    width:100%;
-    border-collapse:collapse;
-}
+.calendar-day.has-concert{ background-color:#d1f2eb; cursor:pointer; transition: all 0.2s; }
+.calendar-day.has-concert:hover{ background-color:#a8dadc; }
+.calendar-day.expanded{ max-height:400px; background-color:#c8f7c5; overflow-y:auto; }
 
-.calendar-table th{
-    background:#1abc9c;
-    color:white;
-    padding:10px;
-}
+/* Concert buttons */
+.concert-box{ color:white; padding:3px 5px; border-radius:4px; font-size:11px; display:block; margin-bottom:3px; text-align:left; cursor:pointer; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition: all 0.2s; }
+.concert-box:hover{ transform:scale(1.03); box-shadow:0 2px 5px rgba(0,0,0,0.2); }
 
-.calendar-table td{
-    border:1px solid #ddd;
-    width:14.2%;
-    height:140px;
-    vertical-align:top;
-    padding:5px;
-}
+/* Category Colors */
+.concert-pop{ background-color:#3498db; }
+.concert-rock{ background-color:#e74c3c; }
+.concert-jazz{ background-color:#9b59b6; }
+.concert-classical{ background-color:#f39c12; }
 
-.day-number{
-    font-weight:bold;
-    margin-bottom:5px;
-}
-
-.concert-box{
-    background:#1abc9c;
-    color:white;
-    padding:5px;
-    border-radius:5px;
-    margin-bottom:5px;
-    font-size:12px;
-}
-
+/* Modal */
+.modal { display:none; position:fixed; z-index:1000; padding-top:150px; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); }
+.modal-content { background:#30C2A5; margin:auto; padding:20px; width:80%; max-width:450px; border-radius:5px; text-align:left; }
+.modal-content hr { margin:10px 0; }
+.modal-detail { margin-bottom:5px; font-size:14px; }
+.modal-content .row{ display:flex; justify-content:space-between; margin-bottom:5px; }
+.modal-content .col-6{ width:48%; }
+.modal-content button{ min-width:100px; }
+.close { color:#333; float:right; font-size:24px; font-weight:bold; cursor:pointer; }
 </style>
+
+<script>
+// Modal handling
+var modal = document.getElementById("concertModal");
+var span = document.getElementsByClassName("close")[0];
+span.onclick = function(){ modal.style.display="none"; }
+window.onclick = function(event){ if(event.target == modal){ modal.style.display="none"; } }
+
+function openConcertModal(name, actor, category, location, date, time, price, concertId){
+    document.getElementById("modalContent").innerHTML = `
+        <h3 class="text-center mb-3">${name}</h3>
+        <hr/>
+        <div><strong>Actor:</strong> ${actor}</div>
+        <div><strong>Category:</strong> ${category}</div>
+        <div><strong>Location:</strong> ${location}</div>
+        <div class="row mt-2">
+            <div class="col-6"><strong>Date:</strong> ${date}</div>
+            <div class="col-6"><strong>Time:</strong> ${time}</div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-6"><strong>Price:</strong> ${price}</div>
+        </div>
+        <div class="text-center mt-3">
+            <a href="@Url.Action("Create","Booking", new { area = "Customer" })?id=${concertId}" class="btn btn-success">Book Now</a>
+            <button onclick="closeConcertModal()" class="btn btn-secondary">Close</button>
+        </div>
+    `;
+    modal.style.display="block";
+}
+
+function closeConcertModal(){ modal.style.display="none"; }
+
+function clearSearch() {
+    document.querySelector('input[name="SearchString"]').value = '';
+    document.querySelector('select[name="CategoryId"]').value = '';
+    document.querySelector('form').submit();
+}
+
+// Mini day view (double-click to expand)
+document.querySelectorAll('.calendar-day.has-concert').forEach(day=>{
+    day.addEventListener('dblclick',()=>{ day.classList.toggle('expanded'); });
+});
+
+// Export CSV
+function exportCalendar(){
+    let csv = "Concert,Actor,Category,Location,Date,Time,Price\n";
+    @foreach(var concert in Model.Concerts){
+        <text>csv += "@concert.ConcertName,@concert.ActorName,@concert.Category?.Name,@concert.ConcertLocation,@concert.DisplayDate,@concert.DisplayTime,@($"${concert.TicketPrice:0.00}")\n";</text>
+    }
+    let blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "VibeWaveCalendar.csv";
+    link.click();
+}
+</script>
