@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Globalization;
 using VibeWave.Data;
 using VibeWave.DataAccess.Repository;
 using VibeWave.DataAccess.Repository.IRepository;
@@ -102,24 +103,50 @@ namespace VibeWave.Areas.Admin.Controllers
         }
 
         //calender Method
-        public IActionResult Calendar(int? month, int? year)
+        public IActionResult Calendar(int? month, int? year, string searchString, int? categoryId)
         {
             int currentMonth = month ?? DateTime.Now.Month;
             int currentYear = year ?? DateTime.Now.Year;
 
-            var concerts = _unitOfWork.Concert.GetAll().ToList();
+            var concerts = _unitOfWork.Concert.GetAll(includeProperties: "Category").ToList();
 
-            // Filter concerts for selected month/year
+            // Filter by month/year
             concerts = concerts
-                .Where(c =>
-                    c.DisplayDate.Month == currentMonth &&
-                    c.DisplayDate.Year == currentYear)
+                .Where(c => c.DisplayDate.Month == currentMonth && c.DisplayDate.Year == currentYear)
                 .ToList();
+
+            // Filter by search string
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                concerts = concerts
+                    .Where(c => c.ConcertName.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+                             || c.ActorName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            // Filter by category
+            if (categoryId.HasValue)
+            {
+                concerts = concerts.Where(c => c.CategoryId == categoryId.Value).ToList();
+            }
+
+            var calendarVM = new CalendarVM
+            {
+                SearchString = searchString,
+                CategoryId = categoryId,
+                CategoryList = _unitOfWork.Category.GetAll()
+                                  .Select(c => new SelectListItem
+                                  {
+                                      Text = c.Name,
+                                      Value = c.CategoryId.ToString()
+                                  }).ToList(),
+                Concerts = concerts
+            };
 
             ViewBag.Month = currentMonth;
             ViewBag.Year = currentYear;
 
-            return View(concerts);
+            return View(calendarVM);
         }
 
         public IActionResult Details(int id)
