@@ -23,12 +23,12 @@ namespace VibeWave.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            List<Concert> objConcertList = _unitOfWork.Concert.GetAll(includeProperties:"Category").ToList();
+            List<Concert> objConcertList = _unitOfWork.Concert.GetAll(includeProperties: "Category").ToList();
             return View(objConcertList);
         }
 
         // GET: Create
-        public IActionResult Upsert(int? id )
+        public IActionResult Upsert(int? id)
         {
             ConcertVM concertVM = new()
             {
@@ -99,6 +99,40 @@ namespace VibeWave.Areas.Admin.Controllers
                 });
                 return View(concertVM);
             }
+        }
+
+        //calender Method
+        public IActionResult Calendar(int? month, int? year)
+        {
+            int currentMonth = month ?? DateTime.Now.Month;
+            int currentYear = year ?? DateTime.Now.Year;
+
+            var concerts = _unitOfWork.Concert.GetAll().ToList();
+
+            // Filter concerts for selected month/year
+            concerts = concerts
+                .Where(c =>
+                    c.DisplayDate.Month == currentMonth &&
+                    c.DisplayDate.Year == currentYear)
+                .ToList();
+
+            ViewBag.Month = currentMonth;
+            ViewBag.Year = currentYear;
+
+            return View(concerts);
+        }
+
+        public IActionResult Details(int id)
+        {
+            var concert = _unitOfWork.Concert
+                .Get(u => u.Id == id, includeProperties: "Category");
+
+            if (concert == null)
+            {
+                return NotFound();
+            }
+
+            return View(concert);
         }
 
         #region API calls

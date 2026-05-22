@@ -1,0 +1,143 @@
+﻿@model List<Concert>
+
+@{
+    int month = ViewBag.Month;
+    int year = ViewBag.Year;
+
+    DateTime firstDay = new DateTime(year, month, 1);
+
+    int daysInMonth = DateTime.DaysInMonth(year, month);
+
+    // Monday = first day
+    int startDay = ((int)firstDay.DayOfWeek + 6) % 7;
+}
+
+<div class="calendar-header">
+
+    <a asp-action="Calendar"
+       asp-route-month="@(month == 1 ? 12 : month - 1)"
+       asp-route-year="@(month == 1 ? year - 1 : year)">
+        ◀ Previous
+    </a>
+
+    <h2>@firstDay.ToString("MMMM yyyy")</h2>
+
+    <a asp-action="Calendar"
+       asp-route-month="@(month == 12 ? 1 : month + 1)"
+       asp-route-year="@(month == 12 ? year + 1 : year)">
+        Next ▶
+    </a>
+
+</div>
+
+<table class="calendar-table">
+
+    <thead>
+        <tr>
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thu</th>
+            <th>Fri</th>
+            <th>Sat</th>
+            <th>Sun</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <tr>
+
+            @for (int i = 0; i < startDay; i++)
+            {
+                <td></td>
+            }
+
+            @for (int day = 1; day <= daysInMonth; day++)
+            {
+                var currentDate = new DateOnly(year, month, day);
+
+                var dayConcerts = Model
+                    .Where(c => c.DisplayDate == currentDate)
+                    .ToList();
+
+                <td class="calendar-day">
+
+                    <div class="day-number">@day</div>
+
+                    @foreach (var concert in dayConcerts)
+                        {
+                            <a asp-action="Details"
+                               asp-route-id="@concert.Id"
+                               class="concert-box d-block text-decoration-none">
+
+                                <strong>@concert.ConcertName</strong>
+
+                                <br />
+
+                                @concert.ActorName
+
+                                <br />
+
+                                @concert.DisplayTime
+
+                            </a>
+                        }
+
+                </td>
+
+                if ((day + startDay) % 7 == 0)
+                {
+                    @:</tr><tr>
+                }
+            }
+
+        </tr>
+
+    </tbody>
+
+</table>
+
+                            <style>
+
+.calendar-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.calendar-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.calendar-table th{
+    background:#1abc9c;
+    color:white;
+    padding:10px;
+}
+
+.calendar-table td{
+    border:1px solid #ddd;
+    width:14.2%;
+    height:140px;
+    vertical-align:top;
+    padding:5px;
+}
+
+.day-number{
+    font-weight:bold;
+    margin-bottom:5px;
+}
+
+.concert-box{
+    background:#1abc9c;
+    color:white;
+    padding:5px;
+    border-radius:5px;
+    margin-bottom:5px;
+    font-size:12px;
+}
+
+</style>

@@ -1,0 +1,17 @@
+﻿@model Concert
+
+<h2>@Model.ConcertName</h2>
+
+<img src="@Model.ConcertImageUrl" width="300" />
+
+<p><strong>Artist:</strong> @Model.ActorName</p>
+
+<p><strong>Location:</strong> @Model.ConcertLocation</p>
+
+<p><strong>Date:</strong> @Model.DisplayDate</p>
+
+<p><strong>Time:</strong> @Model.DisplayTime</p>
+
+<p><strong>Price:</strong> $@Model.TicketPrice</p>
+
+<p><strong>Category:</strong> @Model.Category.Name</p>
