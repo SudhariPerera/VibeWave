@@ -4,6 +4,13 @@
     ViewData["Title"] = "Locked out";
 }
 
+@* 显示 TempData 中的错误信息 *@
+@if (TempData["error"] != null)
+{
+    <div class="alert alert-danger">@TempData["error"]</div>
+}
+
+
 <header>
     <h1 class="text-danger">@ViewData["Title"]</h1>
     <p class="text-danger">This account has been locked out, please try again later.</p>

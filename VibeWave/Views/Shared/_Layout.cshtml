@@ -62,6 +62,26 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index">My Account</a>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-link nav-link" style="border:none;background:none">Logout</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                            </li>
+                        }
+                        @* @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
                                 <a class="nav-link" asp-area="Customer" asp-controller="Account" asp-action="Index">My Account</a>
                             </li>
                             <li class="nav-item">
@@ -78,7 +98,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="Customer" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
-                        }
+                        } *@
                     </ul>
                 </div>
             </div>

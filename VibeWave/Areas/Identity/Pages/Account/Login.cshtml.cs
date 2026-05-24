@@ -111,10 +111,11 @@ namespace VibeWave.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    TempData["success"] = "Login successful!";
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -124,6 +125,8 @@ namespace VibeWave.Areas.Identity.Pages.Account
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
+                    TempData["error"] = "Your account has been locked out due to multiple failed attempts. Please try again in 5 minutes.";
+                    TempData.Keep("error");
                     return RedirectToPage("./Lockout");
                 }
                 else

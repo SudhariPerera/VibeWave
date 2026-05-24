@@ -22,4 +22,5 @@ namespace VibeWave.Areas.Identity.Pages.Account
         {
         }
     }
+
 }

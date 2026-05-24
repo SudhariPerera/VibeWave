@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using VibeWave.Data;
 using VibeWave.DataAccess.Repository.IRepository;
 using VibeWave.Models;
@@ -6,6 +7,7 @@ using VibeWave.Models;
 namespace VibeWave.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

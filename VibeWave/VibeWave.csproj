@@ -8,12 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="FreeSpire.Barcode" Version="6.6.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.23" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.23" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.23" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.23" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.23" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.23" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.23">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -23,13 +24,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VibeWave.DataAccess\VibeWave.DataAccess.csproj" />
-    <ProjectReference Include="..\VibeWave.Models\VibeWave.Models.csproj" />
-    <ProjectReference Include="..\VibeWave.Utilities\VibeWave.Utilities.csproj" />
+    <Folder Include="Areas\Identity\Data\" />
+    <Folder Include="wwwroot\images\concert\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\concert\" />
+    <ProjectReference Include="..\VibeWave.DataAccess\VibeWave.DataAccess.csproj" />
+    <ProjectReference Include="..\VibeWave.Models\VibeWave.Models.csproj" />
+    <ProjectReference Include="..\VibeWave.Utilities\VibeWave.Utilities.csproj" />
   </ItemGroup>
 
 </Project>
