@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QRCoder;
+using Stripe.Checkout;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,12 +10,12 @@ using System.IO;
 using System.Linq;
 using VibeWave.DataAccess.Repository.IRepository;
 using VibeWave.Models;
-using Stripe.Checkout;
 using VibeWave.Models.Constants;
 
 namespace VibeWave.Areas.Customer.Controllers
 {
     [Area("Customer")]
+    [Authorize]
     public class BookingController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
