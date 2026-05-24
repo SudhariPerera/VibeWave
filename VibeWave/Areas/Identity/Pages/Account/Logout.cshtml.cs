@@ -27,6 +27,10 @@ namespace VibeWave.Areas.Identity.Pages.Account
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
+
+            // 添加注销成功提示
+            TempData["success"] = "You have been logged out.";
+
             if (returnUrl != null)
             {
                 return LocalRedirect(returnUrl);
