@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.Contracts;
 using VibeWave.DataAccess.Repository.IRepository;
 using VibeWave.Models;
@@ -6,6 +7,7 @@ using VibeWave.Models;
 namespace VibeWave.Areas.Customer.Controllers
 {
     [Area("Customer")]
+    [Authorize]
     public class ChatController : Controller
     {
         //private readonly IUnitOfWork _unitOfWork;

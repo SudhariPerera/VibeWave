@@ -37,7 +37,7 @@
                             <a class="nav-link" asp-area="Customer" asp-controller="Booking" asp-action="Index">Booking</a>
                         </li>
 
-                        <li class="nav-item dropdown">
+                        @* <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Content Management
                             </a>
@@ -51,7 +51,7 @@
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                             </ul>
-                        </li>
+                        </li> *@
 
                         <li class="nav-item">
                             <a class="nav-link" asp-area="Customer" asp-controller="Contact" asp-action="Index">Contact Us</a>
@@ -61,6 +61,23 @@
                         </li>
                         @if (SignInManager.IsSignedIn(User))
                         {
+                            @if(User.IsInRole("Admin"))
+                            {
+                               <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Admin Panel
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" asp-area="Admin" asp-controller="Concert" asp-action="Index">Concert</a>
+                                        </li>
+
+                                        <li class=" nav-item">
+                                            <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index">My Account</a>
                             </li>
