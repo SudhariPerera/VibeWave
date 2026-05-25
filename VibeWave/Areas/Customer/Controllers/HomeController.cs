@@ -79,5 +79,10 @@ namespace VibeWave.Areas.Customer.Controllers
         {
             return View();
         }
+
+        public IActionResult Calendar()
+        {
+            return View();
+        }
     }
 }
