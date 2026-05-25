@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using QRCoder;
 using Stripe.Checkout;
@@ -25,16 +26,33 @@ namespace VibeWave.Areas.Customer.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index()
+        private bool CanAccessBooking(Booking booking)
         {
-            var bookings = _unitOfWork.Booking
-                .GetAll(includeProperties: "Concert")
-                .ToList();
-
-            return View(bookings);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return User.IsInRole("Admin") || booking.UserId == userId;
         }
 
-        // GET Method
+        public IActionResult Index()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            IEnumerable<Booking> bookings;
+
+            if (User.IsInRole("Admin"))
+            {
+                bookings = _unitOfWork.Booking.GetAll(includeProperties: "Concert");
+            }
+            else
+            {
+                bookings = _unitOfWork.Booking.GetAll(
+                    u => u.UserId == userId,
+                    includeProperties: "Concert"
+                );
+            }
+
+            return View(bookings.ToList());
+        }
+
         public IActionResult Create(int id)
         {
             var concert = _unitOfWork.Concert.Get(
@@ -48,7 +66,6 @@ namespace VibeWave.Areas.Customer.Controllers
             return View(concert);
         }
 
-        // CREATE (POST) Method
         [HttpPost]
         public IActionResult Create(int ConcertId, string CustomerName, string Email, int NumberOfTickets)
         {
@@ -56,6 +73,8 @@ namespace VibeWave.Areas.Customer.Controllers
 
             if (concert == null)
                 return NotFound();
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var booking = new Booking
             {
@@ -67,13 +86,14 @@ namespace VibeWave.Areas.Customer.Controllers
                 BookingDate = DateTime.Now,
                 IsPaid = false,
                 PaymentStatus = PaymentStatuses.Pending,
-                PaymentMethod = PaymentMethods.Card
+                PaymentMethod = PaymentMethods.Card,
+                UserId = userId
             };
 
             _unitOfWork.Booking.Add(booking);
             _unitOfWork.Save();
 
-            GenerateQrForBooking(booking, concert, "PENDING");
+            GenerateQrForBooking(booking, concert);
 
             _unitOfWork.Booking.Update(booking);
             _unitOfWork.Save();
@@ -81,7 +101,6 @@ namespace VibeWave.Areas.Customer.Controllers
             return RedirectToAction(nameof(BookingDetails), new { id = booking.Id });
         }
 
-        // BOOKING DETAILS
         public IActionResult BookingDetails(int id)
         {
             var booking = _unitOfWork.Booking.Get(
@@ -92,11 +111,12 @@ namespace VibeWave.Areas.Customer.Controllers
             if (booking == null)
                 return NotFound();
 
+            if (!CanAccessBooking(booking))
+                return Forbid();
+
             return View(booking);
         }
 
-
-        // STRIPE PAYMENT
         public IActionResult Pay(int id)
         {
             var booking = _unitOfWork.Booking.Get(
@@ -106,6 +126,9 @@ namespace VibeWave.Areas.Customer.Controllers
 
             if (booking == null)
                 return NotFound();
+
+            if (!CanAccessBooking(booking))
+                return Forbid();
 
             var domain = $"{Request.Scheme}://{Request.Host}/";
 
@@ -139,13 +162,18 @@ namespace VibeWave.Areas.Customer.Controllers
             return Redirect(session.Url);
         }
 
-        // PAYMENT SUCCESS
         public IActionResult PaymentSuccess(int id)
         {
-            var booking = _unitOfWork.Booking.Get(u => u.Id == id, includeProperties: "Concert");
+            var booking = _unitOfWork.Booking.Get(
+                u => u.Id == id,
+                includeProperties: "Concert"
+            );
 
             if (booking == null)
                 return NotFound();
+
+            if (!CanAccessBooking(booking))
+                return Forbid();
 
             if (!booking.IsPaid)
             {
@@ -171,13 +199,18 @@ namespace VibeWave.Areas.Customer.Controllers
             return View("PaymentSuccess", booking);
         }
 
-        // PAY AT VENUE
         public IActionResult PayAtVenue(int id)
         {
-            var booking = _unitOfWork.Booking.Get(u => u.Id == id, includeProperties: "Concert");
+            var booking = _unitOfWork.Booking.Get(
+                u => u.Id == id,
+                includeProperties: "Concert"
+            );
 
             if (booking == null)
                 return NotFound();
+
+            if (!CanAccessBooking(booking))
+                return Forbid();
 
             booking.PaymentStatus = PaymentStatuses.PayAtVenue;
             booking.PaymentMethod = PaymentMethods.Venue;
@@ -188,7 +221,7 @@ namespace VibeWave.Areas.Customer.Controllers
                 $"Customer: {booking.CustomerName}\n" +
                 $"Concert: {booking.Concert?.ConcertName}\n" +
                 $"Payment: PAY AT VENUE"
-                );
+            );
 
             _unitOfWork.Booking.Update(booking);
             _unitOfWork.Save();
@@ -196,14 +229,13 @@ namespace VibeWave.Areas.Customer.Controllers
             return RedirectToAction(nameof(BookingDetails), new { id });
         }
 
-        // QR GENERATOR (REUSABLE)
-        private void GenerateQrForBooking(Booking booking, Concert concert, string paymentStatus)
+        private void GenerateQrForBooking(Booking booking, Concert concert)
         {
             string qrText =
                 $"Booking ID: {booking.Id}\n" +
                 $"Customer: {booking.CustomerName}\n" +
-                $"Concert: {booking.Concert?.ConcertName}\n" +
-                $"Location: {booking.Concert?.ConcertLocation}\n" +
+                $"Concert: {concert.ConcertName}\n" +
+                $"Location: {concert.ConcertLocation}\n" +
                 $"Tickets: {booking.NumberOfTickets}\n" +
                 $"Total: ${booking.TotalPrice}\n" +
                 $"Payment Status: {booking.PaymentStatus}\n" +
@@ -212,7 +244,6 @@ namespace VibeWave.Areas.Customer.Controllers
             booking.QrCodeUrl = GenerateQrCode(qrText);
         }
 
-        // QR CODE GENERATION
         private string GenerateQrCode(string text)
         {
             using (QRCodeGenerator generator = new QRCodeGenerator())
@@ -229,7 +260,6 @@ namespace VibeWave.Areas.Customer.Controllers
             }
         }
 
-        // DOWNLOAD QR
         public IActionResult DownloadQr(int id)
         {
             var booking = _unitOfWork.Booking.Get(u => u.Id == id);
@@ -237,19 +267,24 @@ namespace VibeWave.Areas.Customer.Controllers
             if (booking == null || string.IsNullOrEmpty(booking.QrCodeUrl))
                 return NotFound();
 
+            if (!CanAccessBooking(booking))
+                return Forbid();
+
             var base64 = booking.QrCodeUrl.Split(",")[1];
             var bytes = Convert.FromBase64String(base64);
 
             return File(bytes, "image/png", $"ticket-{id}.png");
         }
 
-        // DELETE Method
         public IActionResult Delete(int id)
         {
             var booking = _unitOfWork.Booking.Get(u => u.Id == id);
 
             if (booking == null)
                 return NotFound();
+
+            if (!CanAccessBooking(booking))
+                return Forbid();
 
             return View(booking);
         }
@@ -261,6 +296,9 @@ namespace VibeWave.Areas.Customer.Controllers
 
             if (booking == null)
                 return NotFound();
+
+            if (!CanAccessBooking(booking))
+                return Forbid();
 
             _unitOfWork.Booking.Remove(booking);
             _unitOfWork.Save();
