@@ -1,0 +1,137 @@
+﻿@model VibeWave.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class=" card shadow border-0 mt-4">
+    <div class=" card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Admin Dashboard</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body p-4">
+        @* <div class="row pb-3">
+            <div class="col-6">
+
+            </div>
+            <div class="col-6 text-end">
+                
+            </div>
+        </div> *@
+        <div class="row">
+
+            @* Concerts *@
+            <div class="col-md-4 mb-3">
+                <div class="card bg-primary text-white shadow">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-uppercase">Concerts</h6>
+                                <h2 class="mb-0">@Model.TotalConcerts</h2>
+                            </div>
+                            <i class="bi bi-music-note-list fs-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Categories *@
+            <div class="col-md-4 mb-3">
+                <div class="card bg-success text-white shadow">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-uppercase">Categories</h6>
+                                <h2 class="mb-0">@Model.TotalCategories</h2>
+                            </div>
+                            <i class="bi bi-tags fs-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Booking *@
+            <div class="col-md-4 mb-3">
+                <div class="card bg-warning text-dark shadow">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-uppercase">Bookings</h6>
+                                <h2 class="mb-0">@Model.TotalBookings</h2>
+                            </div>
+                            <i class="bi bi-ticket-perforated fs-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Users *@
+            <div class="col-md-4 mb-3">
+                <div class="card bg-danger text-white shadow">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-uppercase">Users</h6>
+                                <h2 class="mb-0">@Model.TotalUsers</h2>
+                            </div>
+                            <i class="bi bi-people fs-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Messages *@
+            <div class="col-md-4 mb-3">
+                <div class="card bg-info text-white shadow">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-uppercase">Messages</h6>
+                                <h2 class="mb-0">@Model.TotalMessages</h2>
+                            </div>
+                            <i class="bi bi-envelope fs-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+@*     <table id="tblData" class="table table-bordered table-stried">
+        <thead>
+            <tr>
+                <th>Concert Name</th>
+                <th>Actor Name</th>
+                <th>Concert Location</th>
+                <th>Display Date</th>
+                <th>Display Time</th>
+                <th>Ticket Price</th>
+                <th>Category</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+<style>
+    @@media (max-width: 768px) {
+        .float-right-sm {
+            float: right;
+        }
+    }
+
+    /* Float to the right on screens that are equal to or greater than 769px wide */
+    @@media (min-width: 769px) {
+        .float-right-lg {
+            float: right;
+        }
+    } 
+</style>*@
+
+@section Scripts {
+    <script src="~/js/concert.js"></script>
+}
