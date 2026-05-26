@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="FreeSpire.Barcode" Version="6.6.0" />
+    <PackageReference Include="Google.GenAI" Version="0.15.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.23" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.0" />
@@ -18,6 +19,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
+    <PackageReference Include="OpenAI" Version="2.10.0" />
     <PackageReference Include="QRCoder" Version="1.8.0" />
     <PackageReference Include="Stripe.net" Version="51.1.0" />
   </ItemGroup>

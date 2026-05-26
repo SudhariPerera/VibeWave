@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Authentication.Google;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//能读取刚刚用命令行保存的密钥
+builder.Configuration.AddUserSecrets<Program>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -52,6 +55,7 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+
 
 //builder.Services.AddAuthentication().AddGoogle(options =>
 //    {
