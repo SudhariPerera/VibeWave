@@ -60,7 +60,20 @@ namespace VibeWave.Data
                     TicketPrice = 50,
                     CategoryId = 3,
                     ConcertImageUrl = ""
+                },
+                new Concert
+                {
+                    Id = 4,
+                    ConcertName = "Nurse Georgie Carroll - Infectious",
+                    ActorName = "ABC",
+                    ConcertLocation = "A",
+                    DisplayDate = new DateOnly(2026, 05, 01),
+                    DisplayTime = new TimeOnly(00, 20),
+                    TicketPrice = 50,
+                    CategoryId = 3,
+                    ConcertImageUrl = ""
                 }
+
                 );
             modelBuilder.Entity<Category>().HasData(
                 new Category

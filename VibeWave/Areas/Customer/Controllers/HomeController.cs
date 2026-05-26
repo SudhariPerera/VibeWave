@@ -9,7 +9,7 @@ using VibeWave.Models.ViewModels;
 namespace VibeWave.Areas.Customer.Controllers
 {
     [Area("Customer")]
-    [Authorize]
+    //[Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -21,7 +21,7 @@ namespace VibeWave.Areas.Customer.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index(string searchString, int? categoryId)
+        public IActionResult Index(string searchString, int? categoryId, int page=1)
         {
             var concerts = _unitOfWork.Concert
            .GetAll(includeProperties: "Category")
@@ -36,16 +36,24 @@ namespace VibeWave.Areas.Customer.Controllers
                     (c.ActorName != null && c.ActorName.ToLower().Contains(searchString))
                 );
             }
-
+            // 分类筛选
             if (categoryId.HasValue && categoryId.Value > 0)
                 concerts = concerts.Where(c => c.CategoryId == categoryId.Value);
 
+            // 排序
+            concerts = concerts.OrderBy(c => c.DisplayDate);
+
+            // 分页
+            int pageSize = 3;
+            int totalItems = concerts.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            var pagedConcerts = concerts.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            // 映射为 HomeConcertVM
             var today = DateOnly.FromDateTime(DateTime.Today);
 
-            var concertList = concerts
-                .OrderBy(c => c.DisplayDate)
-                .Select(c => new HomeConcertVM
-                {
+            var concertList = pagedConcerts.Select(c => new HomeConcertVM
+            {
                     Id = c.Id,
                     ConcertName = c.ConcertName,
                     ActorName = c.ActorName,
@@ -69,20 +77,22 @@ namespace VibeWave.Areas.Customer.Controllers
                     {
                         Text = c.Name,
                         Value = c.CategoryId.ToString()
-                    })
+                    }),
+                CurrentPage = page,
+                TotalPages = totalPages
             };
 
             return View(viewModel);
         }
 
-        public IActionResult Error()
-        {
-            return View();
-        }
+        //public IActionResult Error()
+        //{
+        //    return View();
+        //}
 
-        public IActionResult Calendar()
-        {
-            return View();
-        }
+        //public IActionResult Calendar()
+        //{
+        //    return View();
+        //}
     }
 }

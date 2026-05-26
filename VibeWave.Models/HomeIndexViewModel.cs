@@ -18,5 +18,10 @@ namespace VibeWave.Models
         public int? CategoryId { get; set; }// you can choose to fill it or not.
         public List<HomeConcertVM> Concerts{ get; set; }//one(actor) to many(concert)
         public IEnumerable<SelectListItem> CategoryList { get; set; }
+
+        // 分页
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
+        public int PageSize { get; set; } = 6;   // 每页显示6个卡片（2行）
     }
 }
