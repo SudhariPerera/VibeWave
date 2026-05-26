@@ -1,0 +1,58 @@
+﻿@model List<VibeWave.Models.UserWithRoles>
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">User Management</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Roles</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.Email</td>
+                        <td>@(user.PhoneNumber ?? "N/A")</td>
+                        <td>
+                            @if (user.Roles.Any())
+                            {
+                                @string.Join(", ", user.Roles)
+                            }
+                            else
+                            {
+                                <span class="text-muted">Customer</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="w-75 btn-group" role="group">
+                                <a asp-action="Edit" asp-route-id="@user.UserId" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                                <form asp-action="Delete" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@user.UserId" />
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?');">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
