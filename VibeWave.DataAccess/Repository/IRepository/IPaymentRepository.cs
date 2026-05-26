@@ -9,5 +9,6 @@ namespace VibeWave.DataAccess.Repository.IRepository
 {
     public interface IPaymentRepository : IRepository<Payment>
     {
+        void Update(Payment obj);
     }
 }

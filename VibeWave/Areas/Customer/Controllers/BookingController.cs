@@ -12,6 +12,7 @@ using System.Linq;
 using VibeWave.DataAccess.Repository.IRepository;
 using VibeWave.Models;
 using VibeWave.Models.Constants;
+using Stripe;
 
 namespace VibeWave.Areas.Customer.Controllers
 {
@@ -152,7 +153,7 @@ namespace VibeWave.Areas.Customer.Controllers
                     }
                 },
                 Mode = "payment",
-                SuccessUrl = domain + $"Customer/Booking/PaymentSuccess?id={booking.Id}",
+                SuccessUrl = domain + $"Customer/Booking/PaymentSuccess?id={booking.Id}&session_id={{CHECKOUT_SESSION_ID}}",
                 CancelUrl = domain + $"Customer/Booking/BookingDetails?id={booking.Id}"
             };
 
@@ -162,7 +163,7 @@ namespace VibeWave.Areas.Customer.Controllers
             return Redirect(session.Url);
         }
 
-        public IActionResult PaymentSuccess(int id)
+        public IActionResult PaymentSuccess(int id, string session_id)
         {
             var booking = _unitOfWork.Booking.Get(
                 u => u.Id == id,
@@ -177,6 +178,9 @@ namespace VibeWave.Areas.Customer.Controllers
 
             if (!booking.IsPaid)
             {
+                var sessionService = new SessionService();
+                var session = sessionService.Get(session_id);
+
                 booking.IsPaid = true;
                 booking.PaymentStatus = PaymentStatuses.Paid;
                 booking.PaymentMethod = PaymentMethods.Card;
@@ -188,7 +192,7 @@ namespace VibeWave.Areas.Customer.Controllers
                     Currency = "USD",
                     PaymentStatus = "Paid",
                     PaymentDate = DateTime.Now,
-                    PaymentIntentId = Guid.NewGuid().ToString()
+                    PaymentIntentId = session.PaymentIntentId
                 };
 
                 _unitOfWork.Payment.Add(payment);
@@ -292,7 +296,10 @@ namespace VibeWave.Areas.Customer.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePOST(int id)
         {
-            var booking = _unitOfWork.Booking.Get(u => u.Id == id);
+            var booking = _unitOfWork.Booking.Get(
+                u => u.Id == id,
+                includeProperties: "Concert"
+            );
 
             if (booking == null)
                 return NotFound();
@@ -300,10 +307,44 @@ namespace VibeWave.Areas.Customer.Controllers
             if (!CanAccessBooking(booking))
                 return Forbid();
 
+            if (booking.IsPaid && booking.PaymentMethod == PaymentMethods.Card)
+            {
+                var payment = _unitOfWork.Payment.Get(u => u.BookingId == booking.Id);
+
+                if (payment == null || string.IsNullOrEmpty(payment.PaymentIntentId))
+                {
+                    TempData["error"] = "Refund failed because payment details were not found.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var refundOptions = new RefundCreateOptions
+                {
+                    PaymentIntent = payment.PaymentIntentId
+                };
+
+                var refundService = new RefundService();
+                var refund = refundService.Create(refundOptions);
+
+                payment.PaymentStatus = "Refunded";
+                booking.PaymentStatus = "Refunded";
+                booking.IsPaid = false;
+
+                _unitOfWork.Payment.Update(payment);
+                _unitOfWork.Booking.Update(booking);
+                _unitOfWork.Save();
+            }
+
+            if (booking.PaymentStatus == "Refunded")
+            {
+                TempData["success"] = "Booking has been refunded and marked as cancelled.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Only remove unpaid / pay-at-venue bookings
             _unitOfWork.Booking.Remove(booking);
             _unitOfWork.Save();
 
-            TempData["success"] = "Booking Deleted Successfully";
+            TempData["success"] = "Booking deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
     }

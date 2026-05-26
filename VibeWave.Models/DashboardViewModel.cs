@@ -13,5 +13,11 @@ namespace VibeWave.Models
         public int TotalBookings { get; set; }
         public int TotalUsers { get; set; }
         public int TotalMessages { get; set; }
+
+        public decimal TotalRevenue { get; set; }
+        public int PaidBookings { get; set; }
+        public int PendingBookings { get; set; }
+
+        public int RefundedBookings { get; set; }
     }
 }

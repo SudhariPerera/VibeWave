@@ -17,5 +17,10 @@ namespace VibeWave.DataAccess.Repository
         {
             _db = db;
         }
+
+        public void Update(Payment obj)
+        {
+            _db.Payments.Update(obj);
+        }
     }
 }

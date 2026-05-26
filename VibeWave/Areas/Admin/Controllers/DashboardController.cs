@@ -22,13 +22,20 @@ namespace VibeWave.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
+            var bookings = _unitOfWork.Booking.GetAll();
+
             var viewModel = new DashboardViewModel
             {
                 TotalConcerts = _unitOfWork.Concert.GetAll().Count(),
                 TotalCategories = _unitOfWork.Category.GetAll().Count(),
-                TotalBookings = _unitOfWork.Booking.GetAll().Count(),
+                TotalBookings = bookings.Count(),
                 TotalUsers = _userManager.Users.Count(),
-                TotalMessages = _unitOfWork.ContactMessage.GetAll().Count()
+                TotalMessages = _unitOfWork.ContactMessage.GetAll().Count(),
+
+                TotalRevenue = bookings.Where(b => b.IsPaid).Sum(b => b.TotalPrice),
+                PaidBookings = bookings.Count(b => b.IsPaid),
+                PendingBookings = bookings.Count(b => !b.IsPaid),
+                 RefundedBookings = bookings.Count(b => b.PaymentStatus == "Refunded")
             };
 
             return View(viewModel);

@@ -97,40 +97,53 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="card bg-dark text-white shadow">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-uppercase">Refunded</h6>
+                                <h2 class="mb-0">@Model.RefundedBookings</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            <div class="col-md-6 mb-3">
+                <div class="card bg-success text-white shadow">
+                    <div class="card-body text-center">
+                        <h6 class="text-uppercase">Paid Bookings</h6>
+                        <h2>@Model.PaidBookings</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="card bg-secondary text-white shadow">
+                    <div class="card-body text-center">
+                        <h6 class="text-uppercase">Pending Bookings</h6>
+                        <h2>@Model.PendingBookings</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 mb-3">
+                <div class="card bg-dark text-white shadow">
+                    <div class="card-body text-center">
+                            <div>
+                                <h6 class="text-uppercase">Revenue</h6>
+                                <h2 class="mb-0">$@Model.TotalRevenue</h2>
+                            </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+ </div>
 
-@*     <table id="tblData" class="table table-bordered table-stried">
-        <thead>
-            <tr>
-                <th>Concert Name</th>
-                <th>Actor Name</th>
-                <th>Concert Location</th>
-                <th>Display Date</th>
-                <th>Display Time</th>
-                <th>Ticket Price</th>
-                <th>Category</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-    </table>
-</div>
-
-<style>
-    @@media (max-width: 768px) {
-        .float-right-sm {
-            float: right;
-        }
-    }
-
-    /* Float to the right on screens that are equal to or greater than 769px wide */
-    @@media (min-width: 769px) {
-        .float-right-lg {
-            float: right;
-        }
-    } 
-</style>*@
 
 @section Scripts {
     <script src="~/js/concert.js"></script>
