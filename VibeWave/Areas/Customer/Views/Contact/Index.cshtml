@@ -15,15 +15,23 @@
         <div class="container" style="border-radius:5px; background:#f2f2f2; padding:20px;">
             <form method="post" class="row">
                 <div>
-            <label for="fname">First Name</label>
+            <label for="fname">
+                First Name <span class="text-danger">*</span>
+            </label> 
             <input type="text" id="fname" name="firstname" placeholder="Your name..">
             <span asp-validation-for="FirstName" class="text-danger"></span>
 
-            <label for="lname">Last Name</label>
+            <label for="lname">
+                Last Name
+                <span class="text-danger">*</span>
+            </label>
             <input type="text" id="lname" name="lastname" placeholder="Your last name..">
             <span asp-validation-for="LastName" class="text-danger"></span>
 
-            <label for="lname">Email</label>
+            <label for="lname">
+                Email
+                <span class="text-danger">*</span>
+            </label>
             <input type="text" id="email" name="email" placeholder="Your email..">
             <span asp-validation-for="Email" class="text-danger"></span>
 
@@ -36,11 +44,17 @@
             </select>
             <span asp-validation-for="Country" class="text-danger"></span>
 
-            <label for="subject">Subject</label>
+            <label for="subject">
+                Subject
+                <span class="text-danger">*</span>
+            </label>
             <input type="text" id="subject" name="subject" placeholder="Write something.."></input>
             <span asp-validation-for="Subject" class="text-danger"></span>
 
-            <label for="message">Message</label>
+            <label for="message">
+                Message
+                <span class="text-danger">*</span>
+            </label>
             <textarea id="message" name="message" placeholder="Write something.." style="height:200px"></textarea>
             <span asp-validation-for="Message" class="text-danger"></span>
 
@@ -93,6 +107,13 @@
             display:block;
             margin-bottom:10px;
         }
+
+    /* 👇 新增这一条，让标签里的星号不换行 */
+        label .text-danger {
+        display: inline;
+        margin-bottom: 0;
+        }
+
     </style>
 @section Scripts {
     @{

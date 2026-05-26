@@ -77,6 +77,11 @@ namespace VibeWave.Areas.Customer.Controllers
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            HttpContext.Session.SetInt32("ConcertId", ConcertId);
+            HttpContext.Session.SetString("CustomerName", CustomerName);
+            HttpContext.Session.SetString("Email", Email);
+            HttpContext.Session.SetInt32("NumberOfTickets", NumberOfTickets);
+
             var booking = new Booking
             {
                 ConcertId = ConcertId,
@@ -199,6 +204,10 @@ namespace VibeWave.Areas.Customer.Controllers
                 _unitOfWork.Booking.Update(booking);
                 _unitOfWork.Save();
             }
+            HttpContext.Session.Remove("ConcertId");
+            HttpContext.Session.Remove("CustomerName");
+            HttpContext.Session.Remove("Email");
+            HttpContext.Session.Remove("NumberOfTickets");
 
             return View("PaymentSuccess", booking);
         }
@@ -229,6 +238,11 @@ namespace VibeWave.Areas.Customer.Controllers
 
             _unitOfWork.Booking.Update(booking);
             _unitOfWork.Save();
+
+            HttpContext.Session.Remove("ConcerId");
+            HttpContext.Session.Remove("CustomerName");
+            HttpContext.Session.Remove("Email");
+            HttpContext.Session.Remove("NumberOfTickets");
 
             return RedirectToAction(nameof(BookingDetails), new { id });
         }
