@@ -41,7 +41,13 @@ namespace VibeWave.Models
 
         [Required]
         [Display(Name = "Message")]
-        [StringLength(2000)]
+        [StringLength(5000)]
         public string Message { get; set; }
+
+        [Display(Name = "Submitted At")]
+        public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
+
+        [Display(Name = "Is Read")]
+        public bool IsRead { get; set; } = false;
     }
 }

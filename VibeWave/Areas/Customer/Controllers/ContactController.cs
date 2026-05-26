@@ -36,6 +36,8 @@ namespace VibeWave.Areas.Customer.Controllers
                     Country = obj.Country,
                     Subject = obj.Subject,
                     Message = obj.Message,
+                    SubmittedAt = DateTime.UtcNow,   // 显式设置提交时间
+                    IsRead = false                   // 新留言未读
                 };
                 _unitOfWork.ContactMessage.Add(message);
                 _unitOfWork.Save();
