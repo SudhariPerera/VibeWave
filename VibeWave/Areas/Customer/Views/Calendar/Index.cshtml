@@ -4,8 +4,6 @@
 @{
     int month = ViewBag.Month;
     int year = ViewBag.Year;
-    string searchString = ViewBag.SearchString as string ?? "";
-    string categoryId = ViewBag.CategoryId as string ?? "";
 
     DateTime firstDay = new DateTime(year, month, 1);
     int daysInMonth = DateTime.DaysInMonth(year, month);
@@ -14,19 +12,29 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
-        <a asp-action="Index" asp-route-month="@(month == 1 ? 12 : month - 1)" asp-route-year="@(month == 1 ? year - 1 : year)">
+        <a asp-action="Index"
+           asp-route-month="@(month == 1 ? 12 : month - 1)"
+           asp-route-year="@(month == 1 ? year - 1 : year)"
+           asp-route-searchString="@Model.SearchString"
+           asp-route-categoryId="@Model.CategoryId">
             ◀ Previous
         </a>
     </div>
     <h2>@firstDay.ToString("MMMM yyyy")</h2>
     <div>
-        <a asp-action="Index" asp-route-month="@(month == 12 ? 1 : month + 1)" asp-route-year="@(month == 12 ? year + 1 : year)">
+        <a asp-action="Index"
+           asp-route-month="@(month == 12 ? 1 : month + 1)"
+           asp-route-year="@(month == 12 ? year + 1 : year)"
+           asp-route-searchString="@Model.SearchString"
+           asp-route-categoryId="@Model.CategoryId">
             Next ▶
         </a>
     </div>
 </div>
 
-<form method="get" action="@Url.Action("Index")" class="row g-2 mb-3">
+<form method="get" asp-action="Index" class="row g-2 mb-3">
+    <input type="hidden" name="month" value="@month" />
+    <input type="hidden" name="year" value="@year" />
     <div class="col-md-4">
         <input type="text" name="SearchString" value="@Model.SearchString" class="form-control" placeholder="Search by concert or actor" />
     </div>
@@ -48,12 +56,25 @@
     </div>
     <div class="col-md-4 d-flex">
         <button type="submit" class="btn btn-primary me-2 w-50">Filter</button>
-        <button type="button" class="btn btn-secondary w-50" onclick="clearSearch()">Clear</button>
+
+        <a asp-action="Index"
+           asp-route-month="@ViewBag.Month"
+           asp-route-year="@ViewBag.Year"
+           class="btn btn-secondary w-50">
+            Clear
+        </a>
     </div>
 </form>
 
 <!-- EXPORT -->
 <button onclick="exportCalendar()" class="btn btn-outline-primary mb-3">Export Calendar</button> 
+
+<div style="background:#f8f9fa; padding:10px; margin-bottom:10px;">
+@foreach (var c in Model.Concerts)
+{
+    <p>@c.ConcertName - @c.DisplayDate</p>
+}
+</div>
 
 <!-- CALENDAR TABLE -->
 <table class="calendar-table">
@@ -71,7 +92,10 @@
         @for (int day = 1; day <= daysInMonth; day++)
         {
             var currentDate = new DateOnly(year, month, day);
-            var dayConcerts = Model.Concerts.Where(c => c.DisplayDate == currentDate).ToList();
+            var dayConcerts = Model.Concerts
+                .Where(c => c.DisplayDate.ToString("yyyy-MM-dd") ==
+                            currentDate.ToString("yyyy-MM-dd"))
+                .ToList();
             <td class="calendar-day @(dayConcerts.Any() ? "has-concert" : "")">
                 <div class="day-number">@day</div>
 
@@ -176,9 +200,12 @@ function openConcertModal(name, actor, category, location, date, time, price, co
 function closeConcertModal(){ modal.style.display="none"; }
 
 function clearSearch() {
-    document.querySelector('input[name="SearchString"]').value = '';
-    document.querySelector('select[name="CategoryId"]').value = '';
-    document.querySelector('form').submit();
+    const form = document.querySelector('form');
+
+    form.querySelector('input[name="SearchString"]').value = '';
+    form.querySelector('select[name="CategoryId"]').value = '';
+
+    form.submit();
 }
 
 // Mini day view (double-click to expand)

@@ -118,55 +118,8 @@ namespace VibeWave.Areas.Admin.Controllers
             return View(concertVM);
         }
 
-        //calender Method
-        public IActionResult Calendar(int? month, int? year, string searchString, int? categoryId)
-        {
-            int currentMonth = month ?? DateTime.Now.Month;
-            int currentYear = year ?? DateTime.Now.Year;
-            var today = DateOnly.FromDateTime(DateTime.Now);
-
-            var concerts = _unitOfWork.Concert.GetAll(includeProperties: "Category").ToList();
-
-
-            concerts = concerts
-                .Where(c => c.DisplayDate.Month == currentMonth && c.DisplayDate.Year == currentYear)
-                .ToList();
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                concerts = concerts
-                    .Where(c => c.ConcertName.Contains(searchString, StringComparison.OrdinalIgnoreCase)
-                             || c.ActorName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-            }
-
-
-            if (categoryId.HasValue)
-                concerts = concerts.Where(c => c.CategoryId == categoryId.Value).ToList();
-
-            // Sort: future concerts first, past last
-            var futureConcerts = concerts.Where(c => c.DisplayDate >= today).OrderBy(c => c.DisplayDate).ToList();
-            var pastConcerts = concerts.Where(c => c.DisplayDate < today).OrderBy(c => c.DisplayDate).ToList();
-            concerts = futureConcerts.Concat(pastConcerts).ToList();
-
-            var calendarVM = new CalendarVM
-            {
-                SearchString = searchString,
-                CategoryId = categoryId,
-                CategoryList = _unitOfWork.Category.GetAll().Select(c => new SelectListItem
-                {
-                    Text = c.Name,
-                    Value = c.CategoryId.ToString()
-                }).ToList(),
-                Concerts = concerts
-            };
-
-            ViewBag.Month = currentMonth;
-            ViewBag.Year = currentYear;
-
-            return View(calendarVM);
-        }
-
+        //calendar Method
+        
         public IActionResult Details(int id)
         {
             var concert = _unitOfWork.Concert
