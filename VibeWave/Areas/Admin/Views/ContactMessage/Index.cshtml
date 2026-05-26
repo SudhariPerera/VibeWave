@@ -1,0 +1,62 @@
+﻿@model List<VibeWave.Models.ContactMessage>
+@{
+    ViewData["Title"] = "Contact Messages";
+}
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Contact Messages</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Subject</th>
+                    <th>Submitted</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var msg in Model)
+                {
+                    <tr>
+                        <td>@msg.FirstName @msg.LastName</td>
+                        <td>@msg.Email</td>
+                        <td>@msg.Subject</td>
+                        <td>@msg.SubmittedAt.ToString("g")</td>
+                        <td>
+                            @if (msg.IsRead)
+                            {
+                                <span class="badge bg-success">Read</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">Unread</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="w-75 btn-group" role="group">
+                                <a asp-action="Details" asp-route-id="@msg.Id" class="btn btn-primary mx-2">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                                <form asp-action="Delete" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@msg.Id" />
+                                    <button type="submit" class="btn btn-danger mx-2">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

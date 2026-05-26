@@ -1,0 +1,69 @@
+﻿@model VibeWave.Models.ContactMessage
+@{
+    ViewData["Title"] = "Message Details";
+}
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Message Details</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="border p-3">
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">From</div>
+                <div class="col-md-9">@Model.FirstName @Model.LastName</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">Email</div>
+                <div class="col-md-9">@Model.Email</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">Country</div>
+                <div class="col-md-9">@Model.Country</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">Subject</div>
+                <div class="col-md-9">@Model.Subject</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">Message</div>
+                <div class="col-md-9">
+                    @* 如果留言是富文本 HTML，使用 Raw 渲染 *@
+                    @Html.Raw(Model.Message)
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">Submitted At</div>
+                <div class="col-md-9">@Model.SubmittedAt.ToString("f")</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">Status</div>
+                <div class="col-md-9">
+                    @if (Model.IsRead)
+                    {
+                        <span class="badge bg-success">Read</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">Unread</span>
+                    }
+                </div>
+            </div>
+            <div class="row pt-2">
+                <div class="col-6 col-md-3">
+                    <a asp-action="Index" class="btn btn-primary form-control">Back to List</a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <button type="submit" class="btn btn-danger form-control">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
