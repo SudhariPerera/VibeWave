@@ -1,0 +1,66 @@
+﻿@model VibeWave.Models.UserManagementViewModel
+@{
+    ViewData["Title"] = "Edit User Roles";
+}
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Edit Roles for @Model.Email</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form method="post" class="row">
+            <div class="border p-3">
+                <input type="hidden" asp-for="UserId" />
+
+                <div class="mb-3">
+                    <label class="fw-bold">Email</label>
+                    <div>@Model.Email</div>
+                </div>
+                <div class="mb-3">
+                    <label class="fw-bold">Phone</label>
+                    <div>@(Model.PhoneNumber ?? "N/A")</div>
+                </div>
+                <div class="mb-3">
+                    <label class="fw-bold">Current Roles</label>
+                    <div>
+                        @if (Model.CurrentRoles.Any())
+                        {
+                            @string.Join(", ", Model.CurrentRoles)
+                        }
+                        else
+                        {
+                            <span class="text-muted">Customer</span>
+                        }
+                    </div>
+                </div>
+
+                <hr />
+
+                <div class="mb-3">
+                    <label class="fw-bold">Assign Roles</label>
+                    @foreach (var role in Model.AllRoles)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="selectedRoles" value="@role.Name"
+                                   @(Model.CurrentRoles.Contains(role.Name) ? "checked" : "") />
+                            <label class="form-check-label">@role.Name</label>
+                        </div>
+                    }
+                </div>
+
+                <div class="row pt-2">
+                    <div class="col-6 col-md-3">
+                        <button type="submit" class="btn btn-primary form-control">Save</button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a asp-action="Index" class="btn btn-secondary border form-control">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
