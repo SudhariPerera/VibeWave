@@ -1,0 +1,40 @@
+﻿@using VibeWave.Models.ViewModels
+@model CalendarVM
+
+<h2>Concert Calendar</h2>
+
+@if (Model.Concerts != null && Model.Concerts.Any())
+{
+    <div class="row">
+        @foreach (var concert in Model.Concerts)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card shadow">
+                    <img src="@concert.ConcertImageUrl" class="card-img-top" style="height:200px; object-fit:cover;" />
+
+                    <div class="card-body">
+                        <h5 class="card-title">@concert.ConcertName</h5>
+                        <p><strong>Artist:</strong> @concert.ActorName</p>
+                        <p><strong>Location:</strong> @concert.ConcertLocation</p>
+                        <p><strong>Category:</strong> @concert.Category.Name</p>
+                        <p><strong>Date:</strong> @concert.DisplayDate</p>
+                        <p><strong>Time:</strong> @concert.DisplayTime</p>
+                        <p><strong>Price:</strong> $@concert.TicketPrice</p>
+
+                        <a asp-area="Customer"
+                           asp-controller="Booking"
+                           asp-action="Create"
+                           asp-route-id="@concert.Id"
+                           class="btn btn-primary">
+                            Book Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No concerts found.</p>
+}
