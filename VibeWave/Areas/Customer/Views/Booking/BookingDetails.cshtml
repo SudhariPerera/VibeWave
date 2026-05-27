@@ -4,77 +4,97 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-6 offset-md-3">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
                     <h3>Booking Details</h3>
                 </div>
-                <center>
-                <div class="card-body">
+
+                <div class="card-body text-center">
                     <h4>Hello! <i class="bi bi-bluesky"></i> @Model.CustomerName</h4>
 
-                    <p><strong>Email :</strong> @Model.Email</p>
-                    <p><strong>Number Of Tickets :</strong> @Model.NumberOfTickets</p>
-                    <p><strong>TotalPrice :</strong> @Model.TotalPrice</p>
+                    <p><strong>Email:</strong> @Model.Email</p>
+                    <p><strong>Number Of Tickets:</strong> @Model.NumberOfTickets</p>
+                    <p><strong>Total Price:</strong> $@Model.TotalPrice</p>
 
-                    <p><strong>Status:</strong>
-                            @if (Model.IsPaid)
-                            {
-                                <span class="badge bg-success">Paid</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-warning text-dark">Pending</span>
-                            }
+                    <p>
+                        <strong>Status:</strong>
+
+                        @if (Model.PaymentStatus == PaymentStatuses.Paid)
+                        {
+                            <span class="badge bg-success">Paid</span>
+                        }
+                        else if (Model.PaymentStatus == PaymentStatuses.PayAtVenue)
+                        {
+                            <span class="badge bg-info">Pay at Venue</span>
+                        }
+                        else if (Model.PaymentStatus == "Refunded")
+                        {
+                            <span class="badge bg-danger">Refunded</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        }
                     </p>
+
                     <div class="w3-container">
                         <div class="w3-panel w3-pale-blue w3-leftbar w3-rightbar w3-border-blue">
-                            <p><strong>Concer Name :</strong>@Model.Concert?.ConcertName</p>
-                            <p><strong>Concert Location :</strong>@Model.Concert?.ConcertLocation</p>
-                            <p><strong>Display Date :</strong>@Model.Concert?.DisplayDate</p>
-                            <p><strong>Display TIme :</strong>@Model.Concert?.DisplayTime</p>
+                            <p><strong>Concert Name:</strong> @Model.Concert?.ConcertName</p>
+                            <p><strong>Concert Location:</strong> @Model.Concert?.ConcertLocation</p>
+                            <p><strong>Display Date:</strong> @Model.Concert?.DisplayDate</p>
+                            <p><strong>Display Time:</strong> @Model.Concert?.DisplayTime</p>
                         </div>
                     </div>
 
-                        @if (!string.IsNullOrEmpty(Model.QrCodeUrl))
+                    @if (!string.IsNullOrEmpty(Model.QrCodeUrl))
+                    {
+                        <div class="mt-4">
+                            <h5>Your Ticket QR Code</h5>
+
+                            <img src="@Model.QrCodeUrl"
+                                 style="width:220px;height:220px;"
+                                 class="rounded border shadow-sm" />
+
+                            <div class="mt-3">
+                                <a asp-action="DownloadQr"
+                                   asp-route-id="@Model.Id"
+                                   class="btn btn-dark">
+                                    Download QR
+                                </a>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="mt-4">
+                        @if (Model.PaymentStatus == PaymentStatuses.Pending)
                         {
-                            <img src="@Model.QrCodeUrl" style="width:200px;height:200px;" />
+                            <a asp-action="Pay"
+                               asp-route-id="@Model.Id"
+                               class="btn btn-success">
+                                Pay Now
+                            </a>
+
+                            <a asp-action="PayAtVenue"
+                               asp-route-id="@Model.Id"
+                               class="btn btn-warning">
+                                Pay at Venue
+                            </a>
                         }
 
-                    <form method="post" action=" ">
-
-                            @if (Model.PaymentStatus == PaymentStatuses.Pending)
-                            {
-                                <a asp-action="Pay" asp-route-id="@Model.Id" class="btn btn-success">
-                                    Pay Now
-                                </a>
-
-                                <a asp-action="PayAtVenue" asp-route-id="@Model.Id" class="btn btn-warning">
-                                    Pay at Venue
-                                </a>
-                            }
-                            else if (Model.PaymentStatus == PaymentStatuses.Paid)
-                            {
-                                <button class="btn btn-secondary" disabled>Paid</button>
-                            }
-                            else if (Model.PaymentStatus == PaymentStatuses.PayAtVenue)
-                            {
-                                <span class="badge bg-warning">Pay at Venue</span>
-                            }
-
-                        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+                        <a asp-controller="Home"
+                           asp-action="Index"
+                           class="btn btn-secondary">
                             <i class="bi bi-house-door"></i> Back to Home
                         </a>
 
-                        <a asp-controller="Booking" asp-action="Index" class="btn btn-primary">
+                        <a asp-controller="Booking"
+                           asp-action="Index"
+                           class="btn btn-primary">
                             <i class="bi bi-cart2"></i> Back to Bookings
                         </a>
+                    </div>
 
-                        <a asp-action="DownloadQr" asp-route-id="@Model.Id" class="btn btn-dark">
-                             Download QR
-                        </a>
-                    </form>
                 </div>
-                </center>
             </div>
         </div>
     </div>

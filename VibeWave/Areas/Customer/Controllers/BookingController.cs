@@ -239,7 +239,7 @@ namespace VibeWave.Areas.Customer.Controllers
             _unitOfWork.Booking.Update(booking);
             _unitOfWork.Save();
 
-            HttpContext.Session.Remove("ConcerId");
+            HttpContext.Session.Remove("ConcertId");
             HttpContext.Session.Remove("CustomerName");
             HttpContext.Session.Remove("Email");
             HttpContext.Session.Remove("NumberOfTickets");
