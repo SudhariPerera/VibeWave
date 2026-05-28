@@ -35,9 +35,9 @@ namespace VibeWave.Models
         [StringLength(500)]
         public string Subject { get; set; }
 
-        [Required(ErrorMessage = "Message is required")]
+        //[Required(ErrorMessage = "Message is required")]
         [Display(Name = "Message")]
         [StringLength(2000)]
-        public string Message { get; set; }
+        public string? Message { get; set; }
     }
 }

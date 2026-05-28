@@ -52,8 +52,8 @@
             <span asp-validation-for="Subject" class="text-danger"></span>
 
             <label for="message">
-                Message
-                <span class="text-danger">*</span>
+                Message(optional)
+                @* <span class="text-danger">*</span> *@
             </label>
             <textarea id="message" name="message" placeholder="Write something.." style="height:200px"></textarea>
             <span asp-validation-for="Message" class="text-danger"></span>

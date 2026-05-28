@@ -39,10 +39,9 @@ namespace VibeWave.Models
         [StringLength(500)]
         public string Subject { get; set; }
 
-        [Required]
         [Display(Name = "Message")]
         [StringLength(5000)]
-        public string Message { get; set; }
+        public string? Message { get; set; }
 
         [Display(Name = "Submitted At")]
         public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
