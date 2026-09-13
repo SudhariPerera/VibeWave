@@ -6,7 +6,7 @@ In our group we planned to create concert booking application. We are planning t
 
  Name          | Function | GitHub  |
 ------------- | -------- | -------- |
- Yasu Wang   | Admin  |  <a href='https://github.com/WYS0318' >WYS0318</a> |
+ Yusu Wang   | Admin  |  <a href='https://github.com/WYS0318' >WYS0318</a> |
  SudhariPerera   | Forum  |  <a href='https://github.com/SudhariPerera' >SudhariPerera</a> |
 
 
