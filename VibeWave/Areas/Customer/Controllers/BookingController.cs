@@ -5,8 +5,6 @@ using QRCoder;
 using Stripe.Checkout;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using VibeWave.DataAccess.Repository.IRepository;
@@ -266,15 +264,17 @@ namespace VibeWave.Areas.Customer.Controllers
         {
             using (QRCodeGenerator generator = new QRCodeGenerator())
             {
-                QRCodeData data = generator.CreateQrCode(text, QRCodeGenerator.ECCLevel.Q);
-                QRCode code = new QRCode(data);
+                QRCodeData data = generator.CreateQrCode(
+                    text,
+                    QRCodeGenerator.ECCLevel.Q
+                );
 
-                using (Bitmap bitmap = code.GetGraphic(20))
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    bitmap.Save(ms, ImageFormat.Png);
-                    return "data:image/png;base64," + Convert.ToBase64String(ms.ToArray());
-                }
+                PngByteQRCode qrCode = new PngByteQRCode(data);
+
+                byte[] pngBytes = qrCode.GetGraphic(20);
+
+                return "data:image/png;base64," +
+                    Convert.ToBase64String(pngBytes);
             }
         }
 

@@ -79,11 +79,14 @@ namespace VibeWave.Areas.Admin.Controllers
                 if (file != null)
                 {
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    string productPath = Path.Combine(wwwRootPath, @"images\concert");
+                    string productPath = Path.Combine(wwwRootPath, "images", "concert");
 
                     if (!string.IsNullOrEmpty(concertVM.Concert.ConcertImageUrl))
                     {
-                        var oldImagePath = Path.Combine(wwwRootPath, concertVM.Concert.ConcertImageUrl.TrimStart('\\'));
+                        var oldImagePath = Path.Combine(
+                                            wwwRootPath,
+                                            concertVM.Concert.ConcertImageUrl.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString())
+                                        );
                         if (System.IO.File.Exists(oldImagePath))
                         {
                             System.IO.File.Delete(oldImagePath);
@@ -95,7 +98,7 @@ namespace VibeWave.Areas.Admin.Controllers
                         file.CopyTo(fileStream);
                     }
 
-                    concertVM.Concert.ConcertImageUrl = @"\images\concert\" + fileName;
+                    concertVM.Concert.ConcertImageUrl = "/images/concert/" + fileName;
                 }
 
                 if (concertVM.Concert.Id == 0)
@@ -166,7 +169,10 @@ namespace VibeWave.Areas.Admin.Controllers
                 return Json(new { success = false, Message = "Error while deleting" });
             }
 
-            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, concertToBeDeleted.ConcertImageUrl.TrimStart('\\'));
+            var oldImagePath = Path.Combine(
+                                _webHostEnvironment.WebRootPath,
+                                concertToBeDeleted.ConcertImageUrl.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString())
+                            );
 
             if (System.IO.File.Exists(oldImagePath))
             {
